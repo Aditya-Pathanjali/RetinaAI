@@ -1,0 +1,75 @@
+{
+  "seed": 42,
+  "ratios": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15000000000000005
+  },
+  "counts": {
+    "train": 37,
+    "val": 8,
+    "test": 9
+  },
+  "ids": {
+    "train": [
+      "IDRiD_01",
+      "IDRiD_02",
+      "IDRiD_03",
+      "IDRiD_08",
+      "IDRiD_10",
+      "IDRiD_11",
+      "IDRiD_12",
+      "IDRiD_15",
+      "IDRiD_16",
+      "IDRiD_17",
+      "IDRiD_19",
+      "IDRiD_21",
+      "IDRiD_22",
+      "IDRiD_23",
+      "IDRiD_24",
+      "IDRiD_25",
+      "IDRiD_26",
+      "IDRiD_28",
+      "IDRiD_29",
+      "IDRiD_30",
+      "IDRiD_31",
+      "IDRiD_32",
+      "IDRiD_34",
+      "IDRiD_36",
+      "IDRiD_37",
+      "IDRiD_39",
+      "IDRiD_40",
+      "IDRiD_41",
+      "IDRiD_42",
+      "IDRiD_43",
+      "IDRiD_44",
+      "IDRiD_46",
+      "IDRiD_47",
+      "IDRiD_48",
+      "IDRiD_51",
+      "IDRiD_52",
+      "IDRiD_54"
+    ],
+    "val": [
+      "IDRiD_13",
+      "IDRiD_14",
+      "IDRiD_18",
+      "IDRiD_27",
+      "IDRiD_33",
+      "IDRiD_38",
+      "IDRiD_45",
+      "IDRiD_53"
+    ],
+    "test": [
+      "IDRiD_04",
+      "IDRiD_05",
+      "IDRiD_06",
+      "IDRiD_07",
+      "IDRiD_09",
+      "IDRiD_20",
+      "IDRiD_35",
+      "IDRiD_49",
+      "IDRiD_50"
+    ]
+  }
+}

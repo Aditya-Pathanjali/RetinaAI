@@ -1,0 +1,30 @@
+2026-06-18 21:26:59 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-06-18 21:26:59 | [32mINFO    [0m | ClassifierTrainer |   RetinaAI — Stage 2 Severity Classification Training
+2026-06-18 21:26:59 | [32mINFO    [0m | ClassifierTrainer |   Variant:     MASK_INPUT
+2026-06-18 21:26:59 | [32mINFO    [0m | ClassifierTrainer |   Experiment:  exp_04_cls_mask_input
+2026-06-18 21:26:59 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-06-18 21:26:59 | [32mINFO    [0m | ClassifierTrainer | Using device: cpu
+2026-06-18 21:26:59 | [32mINFO    [0m | ClassifierTrainer | Loading Stage 1 Segmentation model from: experiments\exp_04\checkpoints\best.pth
+2026-06-18 21:27:00 | [32mINFO    [0m | ClassifierTrainer | Building HybridDRClassifier (mask_input) | in_channels=7 | feature_dim=0
+2026-06-18 21:27:01 | [32mINFO    [0m | ClassifierTrainer |   Total classifier parameters:     18,471,949
+2026-06-18 21:27:01 | [32mINFO    [0m | ClassifierTrainer |   Trainable classifier parameters: 18,471,949
+2026-06-18 21:27:01 | [32mINFO    [0m | ClassifierTrainer | Building APTOS 2019 dataloaders...
+2026-06-18 21:27:01 | [32mINFO    [0m | ClassifierTrainer |   Train size: 2930
+2026-06-18 21:27:01 | [32mINFO    [0m | ClassifierTrainer |   Val size:   366
+2026-06-18 21:27:01 | [32mINFO    [0m | ClassifierTrainer |   Test size:  366
+2026-06-18 21:30:45 | [32mINFO    [0m | ClassifierTrainer | Epoch  1/1 | Loss: 1.5549 / 1.6128 | Acc: 0.3750 / 0.1875 | QWK: 0.0798 / 0.0000 | LR: 1.00e-04 | Time: 3m 44s | ★ BEST
+2026-06-18 21:30:46 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-06-18 21:30:46 | [32mINFO    [0m | ClassifierTrainer |   Training completed in 3m 45s
+2026-06-18 21:30:46 | [32mINFO    [0m | ClassifierTrainer |   Best Val QWK: 0.0000 (epoch 1)
+2026-06-18 21:30:46 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-06-18 21:30:47 | [32mINFO    [0m | ClassifierTrainer | Training curves saved to: experiments\exp_04_cls_mask_input\plots\classification_curves.png
+2026-06-18 21:30:47 | [32mINFO    [0m | ClassifierTrainer | 
+============================================================
+2026-06-18 21:30:47 | [32mINFO    [0m | ClassifierTrainer |   Evaluating best model on Test Set
+2026-06-18 21:30:47 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-06-18 21:30:48 | [32mINFO    [0m | ClassifierTrainer | Loaded best classifier model from epoch 1
+2026-06-18 21:31:40 | [32mINFO    [0m | ClassifierTrainer | Test Loss:     1.6148
+2026-06-18 21:31:40 | [32mINFO    [0m | ClassifierTrainer | Test Accuracy: 0.1250
+2026-06-18 21:31:40 | [32mINFO    [0m | ClassifierTrainer | Test F1-Score: 0.0444
+2026-06-18 21:31:40 | [32mINFO    [0m | ClassifierTrainer | Test QWK:      0.0000
+2026-06-18 21:31:40 | [32mINFO    [0m | ClassifierTrainer | Test results saved to: experiments\exp_04_cls_mask_input\test_results.json

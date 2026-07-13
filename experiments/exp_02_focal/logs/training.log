@@ -1,0 +1,30 @@
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer | ============================================================
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer |   RetinaAI — Training Started
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer | ============================================================
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer |   Device:       cpu
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer |   Epochs:       100
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer |   Batch size:   4
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer |   Loss:         focal
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer |   Optimizer:    adamw
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer |   LR:           0.0001
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer |   AMP:          False
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer |   Experiment:   exp_02_focal
+2026-05-10 15:52:17 | [32mINFO    [0m | Trainer | ============================================================
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer | ============================================================
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer |   RetinaAI — Training Started
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer | ============================================================
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer |   Device:       cpu
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer |   Epochs:       100
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer |   Batch size:   4
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer |   Loss:         focal
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer |   Optimizer:    adamw
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer |   LR:           0.0001
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer |   AMP:          False
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer |   Experiment:   exp_02_focal
+2026-05-10 15:52:33 | [32mINFO    [0m | Trainer | ============================================================
+2026-05-10 15:53:53 | [32mINFO    [0m | Trainer | Epoch   1/100 | Train Loss: 0.1953 | Val Loss: 0.1582 | Val Dice: 0.0074 | Val IoU: 0.0037 | LR: 1.00e-04 | Time: 1m 35s | ★ BEST
+2026-05-10 15:53:53 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0071 | HE: 0.0136 | EX: 0.0000 | SE: 0.0090
+2026-05-10 15:54:40 | [32mINFO    [0m | Trainer | Epoch   1/100 | Train Loss: 0.1937 | Val Loss: 0.1591 | Val Dice: 0.0074 | Val IoU: 0.0037 | LR: 1.00e-04 | Time: 2m 7s | ★ BEST
+2026-05-10 15:54:40 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0071 | HE: 0.0136 | EX: 0.0000 | SE: 0.0090
+2026-05-10 15:55:41 | [32mINFO    [0m | Trainer | Epoch   2/100 | Train Loss: 0.1678 | Val Loss: 0.1599 | Val Dice: 0.0075 | Val IoU: 0.0038 | LR: 9.99e-05 | Time: 1m 48s | ★ BEST
+2026-05-10 15:55:41 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0071 | HE: 0.0136 | EX: 0.0000 | SE: 0.0093

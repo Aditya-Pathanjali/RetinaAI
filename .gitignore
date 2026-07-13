@@ -1,0 +1,50 @@
+# =============================================================================
+# RetinaAI — .gitignore
+# =============================================================================
+
+# ── Python bytecode ──────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ── Virtual environments ─────────────────────────────────────────────────────
+retina_env/
+test_venv/
+wsl_env/
+.venv/
+venv/
+env/
+
+# ── Model checkpoints (too large for Git) ────────────────────────────────────
+*.pth
+*.pt
+*.ckpt
+*.h5
+
+# ── PyInstaller build artifacts ──────────────────────────────────────────────
+build/
+dist/
+*.spec
+
+# ── One-time / derived scripts ───────────────────────────────────────────────
+patch_model.py
+wsl_requirements.txt
+
+# ── IDE / editor ─────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS files ─────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Jupyter / IPython ────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Runtime logs (not experiment logs) ───────────────────────────────────────
+outputs/logs/
