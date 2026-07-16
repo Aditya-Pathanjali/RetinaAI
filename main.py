@@ -282,6 +282,7 @@ def run_training(config: dict, logger, resume_path: str = None) -> None:
         device=device,
         threshold=eval_cfg.get("threshold", 0.5),
         min_area=eval_cfg.get("min_area", None),
+        use_tta=eval_cfg.get("use_tta", False),
     )
 
     metrics_obj = SegmentationMetrics(
@@ -338,6 +339,7 @@ def run_evaluation(config: dict, logger) -> None:
 
     from utils.helpers import load_checkpoint
     load_checkpoint(str(best_path), model, device=device)
+    model = model.to(device)
     logger.info(f"Loaded model from {best_path}")
 
     # Evaluate
@@ -348,6 +350,7 @@ def run_evaluation(config: dict, logger) -> None:
         device=device,
         threshold=eval_cfg.get("threshold", 0.5),
         min_area=eval_cfg.get("min_area", None),
+        use_tta=eval_cfg.get("use_tta", False),
     )
 
     metrics = SegmentationMetrics(

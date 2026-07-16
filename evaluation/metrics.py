@@ -183,6 +183,7 @@ def evaluate_model(
     device: torch.device,
     threshold: Union[float, Dict[str, float]] = 0.5,
     min_area: Optional[Dict[str, int]] = None,
+    use_tta: bool = False,
 ) -> Dict:
     
     model.eval()
@@ -192,7 +193,15 @@ def evaluate_model(
         images = images.to(device)
         masks = masks.to(device)
 
-        logits = model(images)
+        if use_tta:
+            # Horizontal flip Test-Time Augmentation (TTA)
+            logits = model(images)
+            images_flipped = torch.flip(images, dims=[3])
+            logits_flipped = model(images_flipped)
+            logits_flipped_unflipped = torch.flip(logits_flipped, dims=[3])
+            logits = (logits + logits_flipped_unflipped) / 2.0
+        else:
+            logits = model(images)
             
         metrics.update(logits, masks)
 

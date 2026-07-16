@@ -406,6 +406,32 @@ def main():
     logger.info(f"  Val size:   {len(loaders['val'].dataset)}")
     logger.info(f"  Test size:  {len(loaders['test'].dataset)}")
     
+    # Rebalance training dataset with WeightedRandomSampler for high recall
+    train_dataset = loaders["train"].dataset
+    train_labels = train_dataset.df["diagnosis"].values
+    class_counts = np.bincount(train_labels)
+    logger.info(f"  Train class counts: {class_counts.tolist()}")
+    
+    # Compute inverse frequency sample weights
+    class_weights_inv = 1.0 / (class_counts + 1e-6)
+    sample_weights = [class_weights_inv[label] for label in train_labels]
+    sampler = torch.utils.data.WeightedRandomSampler(
+        weights=sample_weights,
+        num_samples=len(sample_weights),
+        replacement=True
+    )
+    
+    # Re-instantiate the training dataloader with the WeightedRandomSampler
+    loaders["train"] = DataLoader(
+        train_dataset,
+        batch_size=config["training"]["batch_size"],
+        sampler=sampler,
+        num_workers=config["training"]["num_workers"],
+        pin_memory=config["training"]["pin_memory"],
+        drop_last=True
+    )
+    logger.info("  Re-instantiated training dataloader with WeightedRandomSampler.")
+    
     # 5. Optimizer, Loss, Scheduler setup
     opt_name = tc.get("optimizer", "adamw").lower()
     lr = tc.get("learning_rate", 1e-4)
@@ -416,7 +442,14 @@ def main():
     else:
         optimizer = torch.optim.Adam(classifier.parameters(), lr=lr, weight_decay=wd)
         
-    criterion = nn.CrossEntropyLoss()
+    # Calculate class weights for Weighted Cross-Entropy Loss
+    num_classes = len(class_counts)
+    total_samples = len(train_labels)
+    class_weights = total_samples / (num_classes * (class_counts + 1e-6))
+    class_weights = class_weights / class_weights.sum() * num_classes
+    class_weights_tensor = torch.tensor(class_weights, dtype=torch.float32).to(device)
+    logger.info(f"  Weighted Cross-Entropy Loss class weights: {class_weights.tolist()}")
+    criterion = nn.CrossEntropyLoss(weight=class_weights_tensor)
     
     scheduler_name = tc.get("scheduler", "plateau").lower()
     if scheduler_name == "plateau":
@@ -620,10 +653,16 @@ def main():
     )
     
     test_qwk, test_acc, test_f1 = compute_metrics(np.array(test_preds), np.array(test_labels))
+    from sklearn.metrics import recall_score
+    test_recall = recall_score(test_labels, test_preds, average="macro", zero_division=0)
+    class_recalls = recall_score(test_labels, test_preds, average=None, zero_division=0)
+    
     logger.info(f"Test Loss:     {test_loss:.4f}")
     logger.info(f"Test Accuracy: {test_acc:.4f}")
     logger.info(f"Test F1-Score: {test_f1:.4f}")
     logger.info(f"Test QWK:      {test_qwk:.4f}")
+    logger.info(f"Test Recall:   {test_recall:.4f}")
+    logger.info(f"Class Recalls: {[round(float(r), 4) for r in class_recalls]}")
     
     # Save test results
     test_results = {
@@ -631,6 +670,8 @@ def main():
         "accuracy": test_acc,
         "f1_score": test_f1,
         "qwk": test_qwk,
+        "recall_macro": float(test_recall),
+        "class_recalls": [float(r) for r in class_recalls],
     }
     save_json(test_results, str(exp_dir / "test_results.json"))
     logger.info(f"Test results saved to: {exp_dir / 'test_results.json'}")

@@ -121,17 +121,17 @@ training:
 evaluation:
   # Per-class thresholds
   threshold:
-    MA: 0.15
-    HE: 0.40
-    EX: 0.25
-    SE: 0.50
+    MA: 0.10
+    HE: 0.20
+    EX: 0.15
+    SE: 0.25
   
   # remove blobs
   min_area:
-    MA: 2
-    HE: 10
-    EX: 5
-    SE: 20
+    MA: 0
+    HE: 2
+    EX: 1
+    SE: 5
     
   use_tta: true
 experiment:
