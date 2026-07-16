@@ -120,6 +120,9 @@ def main():
     )
     
     test_qwk, test_acc, test_f1 = compute_metrics(np.array(test_preds), np.array(test_labels))
+    from sklearn.metrics import recall_score
+    test_recall = recall_score(test_labels, test_preds, average="macro", zero_division=0)
+    class_recalls = recall_score(test_labels, test_preds, average=None, zero_division=0)
     
     print("\n" + "=" * 50)
     print("  TEST EVALUATION RESULTS")
@@ -128,6 +131,8 @@ def main():
     print(f"  Test Accuracy: {test_acc:.4f}")
     print(f"  Test F1-Score: {test_f1:.4f}")
     print(f"  Test QWK:      {test_qwk:.4f}")
+    print(f"  Test Recall:   {test_recall:.4f}")
+    print(f"  Class Recalls: {[round(float(r), 4) for r in class_recalls]}")
     print("=" * 50)
     
     test_results = {
@@ -135,6 +140,8 @@ def main():
         "accuracy": test_acc,
         "f1_score": test_f1,
         "qwk": test_qwk,
+        "recall_macro": float(test_recall),
+        "class_recalls": [float(r) for r in class_recalls],
     }
     
     save_path = exp_dir / "test_results.json"
