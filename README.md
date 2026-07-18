@@ -2,7 +2,7 @@
 
 A two-stage deep learning system for **diabetic retinopathy (DR) analysis** combining multi-class lesion segmentation with severity grading classification.
 
-> MSc Dissertation Project — University of Hertfordshire, 2025–2026
+> MSc Dissertation Project — University of Leeds, 2025–2026
 
 ---
 

@@ -163,12 +163,34 @@ def split_dataset(config: Dict[str, Any]) -> Dict[str, List[str]]:
     ds = config["dataset"]
     sp = config["split"]
 
+    # Support combined datasets mode
+    if ds.get("name") == "combined":
+        combined_split = {"train": [], "val": [], "test": []}
+        for idx, d_cfg in enumerate(ds.get("datasets", [])):
+            sub_ds_cfg = d_cfg.copy()
+            if "class_names" not in sub_ds_cfg:
+                sub_ds_cfg["class_names"] = ds["class_names"]
+                
+            temp_config = {
+                "dataset": sub_ds_cfg,
+                "split": config["split"],
+                "preprocessing": config["preprocessing"]
+            }
+            # Modify split_file path dynamically per dataset to avoid overwrites
+            temp_config["split"] = temp_config["split"].copy()
+            temp_config["split"]["split_file"] = str(Path(sp["split_file"]).parent / f"split_metadata_{d_cfg.get('name', idx)}.json")
+            
+            d_split = split_dataset(temp_config)
+            for phase in ["train", "val", "test"]:
+                combined_split[phase].extend(d_split[phase])
+        return combined_split
+
     root = Path(ds["root"])
     image_dir = root / ds["train_images"]
     ext = ds.get("image_ext", ".jpg")
 
-    # Discover all image IDs
-    all_ids = sorted([
+    # Discover all training image IDs
+    all_train_ids = sorted([
         f.stem for f in image_dir.iterdir()
         if f.suffix.lower() == ext.lower()
     ])
@@ -176,24 +198,43 @@ def split_dataset(config: Dict[str, Any]) -> Dict[str, List[str]]:
     seed = sp["random_seed"]
     train_ratio = sp["train_ratio"]
     val_ratio = sp["val_ratio"]
-    # test_ratio = sp["test_ratio"]  # implied as remainder
 
-    # First split: train vs (val + test)
-    train_ids, valtest_ids = train_test_split(
-        all_ids,
-        train_size=train_ratio,
-        random_state=seed,
-        shuffle=True,
-    )
+    # Check if we should use the official test set (located in ds["test_images"])
+    use_official_test = ds.get("use_official_test", False)
 
-    # Second split: val vs test from the remaining
-    relative_val = val_ratio / (1.0 - train_ratio)
-    val_ids, test_ids = train_test_split(
-        valtest_ids,
-        train_size=relative_val,
-        random_state=seed,
-        shuffle=True,
-    )
+    if use_official_test:
+        # Train and Val are split from train_images
+        total_train_val = train_ratio + val_ratio
+        train_ids, val_ids = train_test_split(
+            all_train_ids,
+            train_size=train_ratio / total_train_val,
+            random_state=seed,
+            shuffle=True,
+        )
+        
+        # Discover all official test image IDs
+        test_image_dir = root / ds["test_images"]
+        test_ids = sorted([
+            f.stem for f in test_image_dir.iterdir()
+            if f.suffix.lower() == ext.lower()
+        ])
+    else:
+        # First split: train vs (val + test)
+        train_ids, valtest_ids = train_test_split(
+            all_train_ids,
+            train_size=train_ratio,
+            random_state=seed,
+            shuffle=True,
+        )
+
+        # Second split: val vs test from the remaining
+        relative_val = val_ratio / (1.0 - train_ratio)
+        val_ids, test_ids = train_test_split(
+            valtest_ids,
+            train_size=relative_val,
+            random_state=seed,
+            shuffle=True,
+        )
 
     split = {
         "train": sorted(train_ids),
@@ -208,7 +249,7 @@ def split_dataset(config: Dict[str, Any]) -> Dict[str, List[str]]:
     with open(save_path, "w", encoding="utf-8") as f:
         json.dump({
             "seed": seed,
-            "ratios": {"train": train_ratio, "val": val_ratio, "test": 1 - train_ratio - val_ratio},
+            "ratios": {"train": train_ratio, "val": val_ratio, "test": 1 - train_ratio - val_ratio if not use_official_test else "official"},
             "counts": {k: len(v) for k, v in split.items()},
             "ids": split,
         }, f, indent=2)
@@ -222,6 +263,7 @@ def build_dataloaders(
 ) -> Dict[str, DataLoader]:
     
     from preprocessing.transforms import get_train_transforms, get_val_transforms
+    from torch.utils.data import ConcatDataset
 
     if split is None:
         split = split_dataset(config)
@@ -231,18 +273,72 @@ def build_dataloaders(
     val_transform = get_val_transforms(config)
 
     train_cfg = config["training"]
+    ds_cfg = config["dataset"]
+
+    # Support combined datasets mode
+    if ds_cfg.get("name") == "combined":
+        phase_datasets = {"train": [], "val": [], "test": []}
+        for idx, d_cfg in enumerate(ds_cfg.get("datasets", [])):
+            sub_ds_cfg = d_cfg.copy()
+            if "class_names" not in sub_ds_cfg:
+                sub_ds_cfg["class_names"] = ds_cfg["class_names"]
+                
+            temp_config = {
+                "dataset": sub_ds_cfg,
+                "split": config["split"],
+                "preprocessing": config["preprocessing"],
+                "training": config["training"]
+            }
+            # Perform split dataset lookup for this single config
+            d_split = split_dataset(temp_config)
+            
+            for phase in ["train", "val", "test"]:
+                is_train = (phase == "train")
+                transform = train_transform if is_train else val_transform
+                
+                is_training_split = True
+                if phase == "test" and d_cfg.get("use_official_test", False):
+                    is_training_split = False
+                    
+                ds_instance = IDRiDDataset(
+                    image_ids=d_split[phase],
+                    config=temp_config,
+                    transform=transform,
+                    enhancer=enhancer,
+                    is_training=is_training_split,
+                )
+                phase_datasets[phase].append(ds_instance)
+        
+        loaders = {}
+        for phase in ["train", "val", "test"]:
+            is_train = (phase == "train")
+            concated_ds = ConcatDataset(phase_datasets[phase])
+            
+            loaders[phase] = DataLoader(
+                concated_ds,
+                batch_size=train_cfg["batch_size"],
+                shuffle=is_train,
+                num_workers=train_cfg.get("num_workers", 4),
+                pin_memory=train_cfg.get("pin_memory", True),
+                drop_last=is_train,
+            )
+        return loaders
 
     loaders = {}
     for phase, ids in split.items():
         is_train = (phase == "train")
         transform = train_transform if is_train else val_transform
 
+        is_training_split = True
+        if phase == "test" and config["dataset"].get("use_official_test", False):
+            is_training_split = False
+
         dataset = IDRiDDataset(
             image_ids=ids,
             config=config,
             transform=transform,
             enhancer=enhancer,
-            is_training=True,  # All splits come from the training folder
+            is_training=is_training_split,
         )
 
         loaders[phase] = DataLoader(
