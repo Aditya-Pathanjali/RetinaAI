@@ -5,6 +5,41 @@ from collections import defaultdict
 from typing import Union
 import cv2
 
+import torch.nn.functional as F
+
+def sliding_window_inference(model, image, patch_size=512, stride=256, num_classes=1):
+    b, c, h, w = image.shape
+    device = image.device
+    probs = torch.zeros((b, num_classes, h, w), device=device)
+    counts = torch.zeros((b, num_classes, h, w), device=device)
+    
+    pad_h = (patch_size - h % patch_size) % patch_size
+    pad_w = (patch_size - w % patch_size) % patch_size
+    
+    if pad_h > 0 or pad_w > 0:
+        image = F.pad(image, (0, pad_w, 0, pad_h))
+        probs = F.pad(probs, (0, pad_w, 0, pad_h))
+        counts = F.pad(counts, (0, pad_w, 0, pad_h))
+        
+    H, W = image.shape[2:]
+    
+    for y in range(0, H - patch_size + 1, stride):
+        for x in range(0, W - patch_size + 1, stride):
+            patch = image[:, :, y:y+patch_size, x:x+patch_size]
+            with torch.no_grad():
+                logits = model(patch)
+                patch_probs = torch.sigmoid(logits)
+            probs[:, :, y:y+patch_size, x:x+patch_size] += patch_probs
+            counts[:, :, y:y+patch_size, x:x+patch_size] += 1
+            
+    probs = probs / counts.clamp(min=1)
+    
+    if pad_h > 0 or pad_w > 0:
+        probs = probs[:, :, :h, :w]
+        
+    # convert probabilities back to logits for loss calculation and metrics
+    return torch.logit(probs.clamp(1e-7, 1 - 1e-7))
+
 class SegmentationMetrics:
     
     def __init__(
@@ -38,10 +73,11 @@ class SegmentationMetrics:
         self.num_samples = 0
 
     @torch.no_grad()
-    def update(self, logits: torch.Tensor, targets: torch.Tensor) -> None:
+    def update(self, logits: torch.Tensor, targets: torch.Tensor, valid_classes: Optional[torch.Tensor] = None) -> None:
        
         probs = torch.sigmoid(logits).cpu().numpy()
         targets_np = targets.cpu().numpy()
+        valid_classes_np = valid_classes.cpu().numpy() if valid_classes is not None else None
 
         batch_size = probs.shape[0]
         self.num_samples += batch_size
@@ -59,13 +95,17 @@ class SegmentationMetrics:
                         if stats[i, cv2.CC_STAT_AREA] < min_a:
                             pred_c[b][labels == i] = 0
 
-            pred_c = pred_c.flatten()
-            true_c = targets_np[:, c].flatten()
+            for b in range(batch_size):
+                if valid_classes_np is not None and valid_classes_np[b, c] == 0:
+                    continue
 
-            self.tp[c] += np.sum(pred_c * true_c)
-            self.fp[c] += np.sum(pred_c * (1 - true_c))
-            self.fn[c] += np.sum((1 - pred_c) * true_c)
-            self.tn[c] += np.sum((1 - pred_c) * (1 - true_c))
+                pred_c_flat = pred_c[b].flatten()
+                true_c_flat = targets_np[b, c].flatten()
+
+                self.tp[c] += np.sum(pred_c_flat * true_c_flat)
+                self.fp[c] += np.sum(pred_c_flat * (1 - true_c_flat))
+                self.fn[c] += np.sum((1 - pred_c_flat) * true_c_flat)
+                self.tn[c] += np.sum((1 - pred_c_flat) * (1 - true_c_flat))
 
     def compute(self) -> Dict[str, Dict[str, float]]:
         
@@ -195,14 +235,18 @@ def evaluate_model(
 
         if use_tta:
             # Horizontal flip Test-Time Augmentation (TTA)
-            logits = model(images)
+            logits = sliding_window_inference(model, images, num_classes=len(class_names))
             images_flipped = torch.flip(images, dims=[3])
-            logits_flipped = model(images_flipped)
+            logits_flipped = sliding_window_inference(model, images_flipped, num_classes=len(class_names))
             logits_flipped_unflipped = torch.flip(logits_flipped, dims=[3])
             logits = (logits + logits_flipped_unflipped) / 2.0
         else:
-            logits = model(images)
+            logits = sliding_window_inference(model, images, num_classes=len(class_names))
             
-        metrics.update(logits, masks)
+        valid_classes = None
+        if isinstance(meta, dict) and "valid_classes" in meta:
+            valid_classes = meta["valid_classes"].to(device)
+
+        metrics.update(logits, masks, valid_classes)
 
     return metrics.compute()

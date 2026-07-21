@@ -261,7 +261,7 @@ def run_training(config: dict, logger, resume_path: str = None) -> None:
 
     #Train
     trainer = Trainer(model, criterion, optimizer, scheduler, config, device)
-    history = trainer.fit(loaders["train"], loaders["val"])
+    history = trainer.fit(loaders["train"], loaders["val"], start_epoch=start_epoch)
 
     #Evaluate on test set
     logger.info("\n" + "=" * 60)
@@ -396,11 +396,16 @@ def _build_scheduler(optimizer, train_config: dict):
     name = train_config.get("scheduler", "cosine").lower()
 
     if name == "cosine":
-        return torch.optim.lr_scheduler.CosineAnnealingLR(
+        base_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
             optimizer,
             T_max=train_config.get("scheduler_T_max", 50),
             eta_min=train_config.get("min_lr", 1e-7),
         )
+        warmup_epochs = train_config.get("warmup_epochs", 0)
+        if warmup_epochs > 0:
+            return WarmupScheduler(optimizer, base_scheduler, warmup_epochs,
+                                   train_config.get("min_lr", 1e-7))
+        return base_scheduler
     elif name == "cosine_warm":
         # CosineAnnealingWarmRestarts: resets LR every T_0 epochs
         # T_mult=2 means each restart doubles the period (30, 60, 120, ...)

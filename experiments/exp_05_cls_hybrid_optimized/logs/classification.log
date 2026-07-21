@@ -1,0 +1,55 @@
+2026-07-16 20:15:13 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-07-16 20:15:13 | [32mINFO    [0m | ClassifierTrainer |   RetinaAI — Stage 2 Severity Classification Training
+2026-07-16 20:15:13 | [32mINFO    [0m | ClassifierTrainer |   Variant:     HYBRID
+2026-07-16 20:15:13 | [32mINFO    [0m | ClassifierTrainer |   Experiment:  exp_05_cls_hybrid_optimized
+2026-07-16 20:15:13 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-07-16 20:15:13 | [32mINFO    [0m | ClassifierTrainer | Using device: cuda
+2026-07-16 20:15:13 | [32mINFO    [0m | ClassifierTrainer | Loading Stage 1 Segmentation model from: experiments\exp_04\checkpoints\best.pth
+2026-07-16 20:15:14 | [32mINFO    [0m | ClassifierTrainer | Building HybridDRClassifier (hybrid) | in_channels=3 | feature_dim=4
+2026-07-16 20:15:15 | [32mINFO    [0m | ClassifierTrainer |   Total classifier parameters:     18,472,269
+2026-07-16 20:15:15 | [32mINFO    [0m | ClassifierTrainer |   Trainable classifier parameters: 18,472,269
+2026-07-16 20:15:15 | [32mINFO    [0m | ClassifierTrainer | Building APTOS 2019 dataloaders...
+2026-07-16 20:15:15 | [32mINFO    [0m | ClassifierTrainer |   Train size: 2930
+2026-07-16 20:15:15 | [32mINFO    [0m | ClassifierTrainer |   Val size:   366
+2026-07-16 20:15:15 | [32mINFO    [0m | ClassifierTrainer |   Test size:  366
+2026-07-16 20:15:15 | [32mINFO    [0m | ClassifierTrainer |   Train class counts: [1434, 300, 808, 154, 234]
+2026-07-16 20:15:15 | [32mINFO    [0m | ClassifierTrainer |   Re-instantiated training dataloader with WeightedRandomSampler.
+2026-07-16 20:15:15 | [32mINFO    [0m | ClassifierTrainer |   Weighted Cross-Entropy Loss class weights: [0.21744192269371218, 1.0393723877361762, 0.385905590314752, 2.024751398282297, 1.3325287009730622]
+2026-07-16 20:18:21 | [32mINFO    [0m | ClassifierTrainer | Epoch  1/20 | Loss: 1.3198 / 1.1685 | Acc: 0.3275 / 0.5492 | QWK: 0.3815 / 0.7771 | LR: 1.00e-04 | Time: 3m 6s | * BEST
+2026-07-16 20:21:50 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-07-16 20:21:50 | [32mINFO    [0m | ClassifierTrainer |   RetinaAI — Stage 2 Severity Classification Training
+2026-07-16 20:21:50 | [32mINFO    [0m | ClassifierTrainer |   Variant:     HYBRID
+2026-07-16 20:21:50 | [32mINFO    [0m | ClassifierTrainer |   Experiment:  exp_05_cls_hybrid_optimized
+2026-07-16 20:21:50 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-07-16 20:21:50 | [32mINFO    [0m | ClassifierTrainer | Using device: cuda
+2026-07-16 20:21:50 | [32mINFO    [0m | ClassifierTrainer | Loading Stage 1 Segmentation model from: experiments\exp_04\checkpoints\best.pth
+2026-07-16 20:21:52 | [32mINFO    [0m | ClassifierTrainer | Building HybridDRClassifier (hybrid) | in_channels=3 | feature_dim=4
+2026-07-16 20:21:53 | [32mINFO    [0m | ClassifierTrainer |   Total classifier parameters:     18,472,269
+2026-07-16 20:21:53 | [32mINFO    [0m | ClassifierTrainer |   Trainable classifier parameters: 18,472,269
+2026-07-16 20:21:53 | [32mINFO    [0m | ClassifierTrainer | Building APTOS 2019 dataloaders...
+2026-07-16 20:21:53 | [32mINFO    [0m | ClassifierTrainer |   Train size: 2930
+2026-07-16 20:21:53 | [32mINFO    [0m | ClassifierTrainer |   Val size:   366
+2026-07-16 20:21:53 | [32mINFO    [0m | ClassifierTrainer |   Test size:  366
+2026-07-16 20:21:53 | [32mINFO    [0m | ClassifierTrainer |   Train class counts: [1434, 300, 808, 154, 234]
+2026-07-16 20:21:53 | [32mINFO    [0m | ClassifierTrainer |   Re-instantiated training dataloader with WeightedRandomSampler.
+2026-07-16 20:21:53 | [32mINFO    [0m | ClassifierTrainer |   Weighted Cross-Entropy Loss class weights: [0.21744192269371218, 1.0393723877361762, 0.385905590314752, 2.024751398282297, 1.3325287009730622]
+2026-07-16 20:26:15 | [32mINFO    [0m | ClassifierTrainer | Epoch  1/3 | Loss: 1.3206 / 1.1908 | Acc: 0.3227 / 0.5000 | QWK: 0.3783 / 0.7511 | LR: 1.00e-04 | Time: 4m 21s | * BEST
+2026-07-16 20:30:07 | [32mINFO    [0m | ClassifierTrainer | Epoch  2/3 | Loss: 1.0470 / 1.0185 | Acc: 0.4713 / 0.5984 | QWK: 0.6173 / 0.7937 | LR: 1.00e-04 | Time: 3m 50s | * BEST
+2026-07-16 20:32:28 | [32mINFO    [0m | ClassifierTrainer | Epoch  3/3 | Loss: 0.9406 / 1.0236 | Acc: 0.5441 / 0.5956 | QWK: 0.6797 / 0.8126 | LR: 1.00e-04 | Time: 2m 20s | * BEST
+2026-07-16 20:32:29 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-07-16 20:32:29 | [32mINFO    [0m | ClassifierTrainer |   Training completed in 10m 36s
+2026-07-16 20:32:29 | [32mINFO    [0m | ClassifierTrainer |   Best Val QWK: 0.8126 (epoch 3)
+2026-07-16 20:32:29 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-07-16 20:32:30 | [32mINFO    [0m | ClassifierTrainer | Training curves saved to: experiments\exp_05_cls_hybrid_optimized\plots\classification_curves.png
+2026-07-16 20:32:30 | [32mINFO    [0m | ClassifierTrainer | 
+============================================================
+2026-07-16 20:32:30 | [32mINFO    [0m | ClassifierTrainer |   Evaluating best model on Test Set
+2026-07-16 20:32:30 | [32mINFO    [0m | ClassifierTrainer | ============================================================
+2026-07-16 20:32:30 | [32mINFO    [0m | ClassifierTrainer | Loaded best classifier model from epoch 3
+2026-07-16 20:32:35 | [32mINFO    [0m | ClassifierTrainer | Test Loss:     1.0787
+2026-07-16 20:32:35 | [32mINFO    [0m | ClassifierTrainer | Test Accuracy: 0.6284
+2026-07-16 20:32:35 | [32mINFO    [0m | ClassifierTrainer | Test F1-Score: 0.4419
+2026-07-16 20:32:35 | [32mINFO    [0m | ClassifierTrainer | Test QWK:      0.8266
+2026-07-16 20:32:35 | [32mINFO    [0m | ClassifierTrainer | Test Recall:   0.5797
+2026-07-16 20:32:35 | [32mINFO    [0m | ClassifierTrainer | Class Recalls: [0.8744, 0.8667, 0.0575, 0.7059, 0.3939]
+2026-07-16 20:32:35 | [32mINFO    [0m | ClassifierTrainer | Test results saved to: experiments\exp_05_cls_hybrid_optimized\test_results.json

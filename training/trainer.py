@@ -12,7 +12,7 @@ import torch.nn as nn
 from torch.amp import GradScaler, autocast
 from torch.utils.data import DataLoader
 
-from evaluation.metrics import SegmentationMetrics
+from evaluation.metrics import SegmentationMetrics, sliding_window_inference
 from utils.helpers import (
     format_time,
     save_checkpoint,
@@ -108,6 +108,7 @@ class Trainer:
         self,
         train_loader: DataLoader,
         val_loader: DataLoader,
+        start_epoch: int = 1,
     ) -> Dict[str, List[float]]:
         
         self.logger.info("=" * 60)
@@ -125,7 +126,7 @@ class Trainer:
 
         total_start = time.time()
 
-        for epoch in range(1, self.epochs + 1):
+        for epoch in range(start_epoch, self.epochs + 1):
             epoch_start = time.time()
 
             #Train
@@ -226,12 +227,19 @@ class Trainer:
             images = images.to(self.device, non_blocking=True)
             masks = masks.to(self.device, non_blocking=True)
 
+            valid_classes = None
+            if isinstance(meta, dict) and "valid_classes" in meta:
+                valid_classes = meta["valid_classes"].to(self.device, non_blocking=True)
+
             self.optimizer.zero_grad(set_to_none=True)
 
             # Forward pass with automatic mixed precision
             with autocast(self.device_type, enabled=self.use_amp):
                 logits = self.model(images)
-                loss = self.criterion(logits, masks)
+                if valid_classes is not None:
+                    loss = self.criterion(logits, masks, valid_classes)
+                else:
+                    loss = self.criterion(logits, masks)
 
             # Backward pass with gradient scaling
             self.scaler.scale(loss).backward()
@@ -273,14 +281,28 @@ class Trainer:
             images = images.to(self.device, non_blocking=True)
             masks = masks.to(self.device, non_blocking=True)
 
+            valid_classes = None
+            if isinstance(meta, dict) and "valid_classes" in meta:
+                valid_classes = meta["valid_classes"].to(self.device, non_blocking=True)
+
             with autocast(self.device_type, enabled=self.use_amp):
-                logits = self.model(images)
-                loss = self.criterion(logits, masks)
+                # Use sliding window inference for validation to handle full res images
+                logits = sliding_window_inference(
+                    self.model, images, 
+                    patch_size=self.config["preprocessing"].get("image_size", 512),
+                    stride=self.config["preprocessing"].get("image_size", 512) // 2,
+                    num_classes=len(self.class_names)
+                )
+                
+                if valid_classes is not None:
+                    loss = self.criterion(logits, masks, valid_classes)
+                else:
+                    loss = self.criterion(logits, masks)
 
             running_loss += loss.item()
             num_batches += 1
 
-            metrics.update(logits, masks)
+            metrics.update(logits, masks, valid_classes)
 
         avg_loss = running_loss / max(num_batches, 1)
         metric_results = metrics.compute()

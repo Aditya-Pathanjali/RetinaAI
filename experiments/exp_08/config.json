@@ -1,0 +1,241 @@
+{
+    "dataset": {
+        "name": "combined",
+        "class_names": [
+            "MA",
+            "HE",
+            "EX",
+            "SE"
+        ],
+        "datasets": [
+            {
+                "name": "idrid",
+                "root": "C:/Dissertation/Datasets/IDRiD/A. Segmentation/A. Segmentation",
+                "train_images": "1. Original Images/a. Training Set",
+                "test_images": "1. Original Images/b. Testing Set",
+                "train_masks": "2. All Segmentation Groundtruths/a. Training Set",
+                "test_masks": "2. All Segmentation Groundtruths/b. Testing Set",
+                "use_official_test": true,
+                "lesion_classes": {
+                    "MA": "1. Microaneurysms",
+                    "HE": "2. Haemorrhages",
+                    "EX": "3. Hard Exudates",
+                    "SE": "4. Soft Exudates"
+                },
+                "mask_suffixes": {
+                    "MA": "_MA",
+                    "HE": "_HE",
+                    "EX": "_EX",
+                    "SE": "_SE"
+                },
+                "image_ext": ".jpg",
+                "mask_ext": ".tif"
+            },
+            {
+                "name": "ddr",
+                "root": "C:/Dissertation/Datasets/DDR_final/DDR-dataset/lesion_segmentation",
+                "train_images": "train/image",
+                "test_images": "test/image",
+                "train_masks": "train/label",
+                "test_masks": "test/label",
+                "use_official_test": true,
+                "lesion_classes": {
+                    "MA": "MA",
+                    "HE": "HE",
+                    "EX": "EX",
+                    "SE": "SE"
+                },
+                "mask_suffixes": {
+                    "MA": "",
+                    "HE": "",
+                    "EX": "",
+                    "SE": ""
+                },
+                "image_ext": ".jpg",
+                "mask_ext": ".tif"
+            },
+            {
+                "name": "eophtha",
+                "root": "C:/Dissertation/Datasets/E-Ophtha",
+                "train_images": "",
+                "test_images": "",
+                "train_masks": "",
+                "test_masks": "",
+                "use_official_test": false,
+                "lesion_classes": {
+                    "MA": "",
+                    "HE": "",
+                    "EX": "",
+                    "SE": ""
+                },
+                "mask_suffixes": {
+                    "MA": "",
+                    "HE": "",
+                    "EX": "",
+                    "SE": ""
+                },
+                "image_ext": ".jpg",
+                "mask_ext": ".png"
+            }
+        ]
+    },
+    "split": {
+        "train_ratio": 0.85,
+        "val_ratio": 0.15,
+        "test_ratio": 0.0,
+        "random_seed": 42,
+        "split_file": "outputs/split_metadata_eophtha_combined.json"
+    },
+    "preprocessing": {
+        "image_size": 768,
+        "normalize_mean": [
+            0.485,
+            0.456,
+            0.406
+        ],
+        "normalize_std": [
+            0.229,
+            0.224,
+            0.225
+        ],
+        "apply_clahe": true,
+        "clahe_clip_limit": 2.0,
+        "clahe_tile_grid": [
+            8,
+            8
+        ],
+        "apply_bg_crop": true,
+        "apply_green_enhance": true,
+        "apply_illum_correct": true,
+        "apply_denoise": false,
+        "denoise_kernel": 3
+    },
+    "augmentation": {
+        "enabled": true,
+        "p_hflip": 0.5,
+        "p_vflip": 0.0,
+        "p_rotate": 0.5,
+        "rotate_limit": 45,
+        "p_brightness": 0.4,
+        "brightness_limit": 0.2,
+        "contrast_limit": 0.2,
+        "p_elastic": 0.3,
+        "elastic_alpha": 120,
+        "elastic_sigma": 6,
+        "p_grid": 0.3,
+        "p_gamma": 0.4,
+        "gamma_limit": [
+            70,
+            130
+        ],
+        "p_gauss_noise": 0.2,
+        "p_sharpen": 0.3,
+        "p_hue_sat": 0.2,
+        "p_coarse_dropout": 0.2
+    },
+    "model": {
+        "name": "AttentionUNet",
+        "encoder_name": "resnet34",
+        "encoder_weights": "imagenet",
+        "in_channels": 3,
+        "out_channels": 4,
+        "base_features": 32,
+        "encoder_depth": 4,
+        "dropout_rate": 0.15,
+        "use_attention": true,
+        "bilinear": false
+    },
+    "loss": {
+        "name": "tversky",
+        "tversky_alpha": 0.7,
+        "tversky_beta": 0.3,
+        "class_weights": [
+            10.0,
+            1.0,
+            1.5,
+            2.0
+        ]
+    },
+    "training": {
+        "epochs": 120,
+        "batch_size": 2,
+        "num_workers": 4,
+        "pin_memory": true,
+        "random_seed": 42,
+        "optimizer": "adamw",
+        "learning_rate": 0.0001,
+        "weight_decay": 0.0001,
+        "grad_clip": 1.0,
+        "scheduler": "cosine",
+        "scheduler_T_max": 120,
+        "min_lr": 1e-07,
+        "warmup_epochs": 5,
+        "early_stopping_patience": 30,
+        "monitor_metric": "val_dice",
+        "use_amp": true,
+        "checkpoint_dir": "checkpoints",
+        "save_best_only": false,
+        "save_every_n": 25
+    },
+    "evaluation": {
+        "threshold": {
+            "MA": 0.03,
+            "HE": 0.2,
+            "EX": 0.15,
+            "SE": 0.25
+        },
+        "min_area": {
+            "MA": 0,
+            "HE": 2,
+            "EX": 1,
+            "SE": 5
+        },
+        "use_tta": true
+    },
+    "experiment": {
+        "output_root": "experiments",
+        "name": "exp_08",
+        "log_dir": "outputs/logs"
+    },
+    "logging": {
+        "level": "INFO",
+        "save_to_file": true,
+        "log_file": "outputs/logs/retinaai.log"
+    },
+    "aptos_dataset": {
+        "root": "C:/Dissertation/Datasets/archive",
+        "train_csv": "train_1.csv",
+        "val_csv": "valid.csv",
+        "test_csv": "test.csv",
+        "train_images": "train_images/train_images",
+        "val_images": "val_images/val_images",
+        "test_images": "test_images/test_images",
+        "image_ext": ".png"
+    },
+    "classification_model": {
+        "num_classes": 5,
+        "lesion_feature_dim": 4,
+        "pretrained": true,
+        "dropout_rate": 0.3,
+        "hidden_dim": 512
+    },
+    "classification_training": {
+        "epochs": 40,
+        "batch_size": 8,
+        "num_workers": 0,
+        "pin_memory": true,
+        "random_seed": 42,
+        "optimizer": "adamw",
+        "learning_rate": 0.0001,
+        "weight_decay": 0.0001,
+        "grad_clip": 1.0,
+        "scheduler": "plateau",
+        "scheduler_patience": 5,
+        "scheduler_factor": 0.5,
+        "min_lr": 1e-07,
+        "early_stopping_patience": 10,
+        "monitor_metric": "val_qwk",
+        "use_amp": true,
+        "checkpoint_dir": "checkpoints_classifier"
+    }
+}

@@ -65,11 +65,10 @@ def get_train_transforms(config: Dict[str, Any]) -> A.Compose:
             # CoarseDropout — acts as regularizer, forces model to use
             # multiple spatial cues instead of relying on single regions
             A.CoarseDropout(
-                max_holes=6,
-                max_height=int(img_size * 0.08),
-                max_width=int(img_size * 0.08),
-                min_holes=2,
-                fill_value=0,
+                num_holes_range=(2, 6),
+                hole_height_range=(int(img_size * 0.02), int(img_size * 0.08)),
+                hole_width_range=(int(img_size * 0.02), int(img_size * 0.08)),
+                fill=0,
                 p=aug.get("p_coarse_dropout", 0.2),
             ),
         ])
@@ -91,7 +90,6 @@ def get_val_transforms(config: Dict[str, Any]) -> A.Compose:
     img_size = prep.get("image_size", 512)
 
     return A.Compose([
-        A.Resize(height=img_size, width=img_size, interpolation=1),
         A.Normalize(
             mean=prep.get("normalize_mean", [0.485, 0.456, 0.406]),
             std=prep.get("normalize_std", [0.229, 0.224, 0.225]),

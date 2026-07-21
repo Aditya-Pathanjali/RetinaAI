@@ -21,6 +21,7 @@ class IDRiDDataset(Dataset):
         transform=None,
         enhancer: Optional[RetinalEnhancer] = None,
         is_training: bool = True,
+        patch_config: Optional[Dict[str, Any]] = None,
     ):
 
         self.image_ids = image_ids
@@ -28,6 +29,12 @@ class IDRiDDataset(Dataset):
         self.transform = transform
         self.enhancer = enhancer
         self.is_training = is_training
+        self.patch_config = patch_config or {}
+        self.patch_enabled = bool(self.patch_config.get("enabled", False) and is_training)
+        self.patch_size = int(self.patch_config.get("size", 512))
+        self.lesion_patch_prob = float(self.patch_config.get("lesion_patch_prob", 0.5))
+        self.priority_classes = self.patch_config.get("priority_classes", ["MA", "HE"])
+        self.samples_per_image = int(self.patch_config.get("samples_per_image", 4 if self.patch_enabled else 1))
 
         # Resolve paths
         ds = config["dataset"]
@@ -49,10 +56,10 @@ class IDRiDDataset(Dataset):
         self.num_classes = len(self.class_names)
 
     def __len__(self) -> int:
-        return len(self.image_ids)
+        return len(self.image_ids) * self.samples_per_image
 
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor, Dict]:
-        image_id = self.image_ids[idx]
+        image_id = self.image_ids[idx % len(self.image_ids)]
 
         image_path = self.image_dir / f"{image_id}{self.image_ext}"
         image = cv2.imread(str(image_path))
@@ -67,6 +74,9 @@ class IDRiDDataset(Dataset):
 
         # Stack into (H, W, C) for Albumentations compatibility
         multi_mask = np.stack(masks, axis=-1)  # (H, W, 4)
+
+        if self.patch_enabled:
+            image, multi_mask = self._crop_patch(image, multi_mask)
 
         # preprocessing (CLAHE, crop, etc.) ---
         if self.enhancer is not None:
@@ -98,9 +108,39 @@ class IDRiDDataset(Dataset):
         meta = {
             "image_id": image_id,
             "image_path": str(image_path),
+            "valid_classes": torch.tensor([1, 1, 1, 1], dtype=torch.float32),
         }
 
         return image, multi_mask, meta
+
+    def _crop_patch(self, image: np.ndarray, multi_mask: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        h, w = multi_mask.shape[:2]
+        ps = min(self.patch_size, h, w)
+        lesion_mask = np.zeros((h, w), dtype=bool)
+
+        use_lesion = np.random.rand() < self.lesion_patch_prob
+        if use_lesion:
+            priority_indices = [
+                self.class_names.index(cls)
+                for cls in self.priority_classes
+                if cls in self.class_names
+            ]
+            for class_idx in priority_indices:
+                lesion_mask |= multi_mask[:, :, class_idx] > 0
+            if not lesion_mask.any():
+                lesion_mask = np.any(multi_mask > 0, axis=2)
+
+        if use_lesion and lesion_mask.any():
+            ys, xs = np.where(lesion_mask)
+            pick = np.random.randint(0, len(xs))
+            cx, cy = int(xs[pick]), int(ys[pick])
+        else:
+            cx = np.random.randint(0, w)
+            cy = np.random.randint(0, h)
+
+        x1 = int(np.clip(cx - ps // 2, 0, max(w - ps, 0)))
+        y1 = int(np.clip(cy - ps // 2, 0, max(h - ps, 0)))
+        return image[y1:y1 + ps, x1:x1 + ps], multi_mask[y1:y1 + ps, x1:x1 + ps]
 
     def _load_single_mask(
         self, image_id: str, cls_name: str, h: int, w: int
@@ -155,7 +195,165 @@ class IDRiDDataset(Dataset):
                 "max_ratio": float(np.max(ratios)) if ratios else 0.0,
                 "min_ratio": float(np.min(ratios)) if ratios else 0.0,
             }
-        return results
+
+
+
+class EOphthaDataset(Dataset):
+    def __init__(
+        self,
+        image_ids: List[str],
+        config: Dict[str, Any],
+        transform=None,
+        enhancer: Optional[RetinalEnhancer] = None,
+        is_training: bool = True,
+        patch_config: Optional[Dict[str, Any]] = None,
+    ):
+        self.image_ids = image_ids
+        self.config = config
+        self.transform = transform
+        self.enhancer = enhancer
+        self.is_training = is_training
+        self.patch_config = patch_config or {}
+        self.patch_enabled = bool(self.patch_config.get("enabled", False) and is_training)
+        self.patch_size = int(self.patch_config.get("size", 512))
+        self.lesion_patch_prob = float(self.patch_config.get("lesion_patch_prob", 0.5))
+        self.priority_classes = self.patch_config.get("priority_classes", ["MA", "HE"])
+        self.samples_per_image = int(self.patch_config.get("samples_per_image", 4 if self.patch_enabled else 1))
+
+        ds = config["dataset"]
+        self.root = Path(ds["root"])
+        self.class_names = ds["class_names"]  # ["MA", "HE", "EX", "SE"]
+        self.num_classes = len(self.class_names)
+
+        # Pre-scan directories to build image path map and mask path map
+        self.image_path_map = {}
+        self.mask_path_map = {}
+
+        root_ma = self.root / "e_ophtha_MA" / "e_optha_MA"
+        if (root_ma / "MA").exists():
+            for root_dir, _, files in os.walk(root_ma / "MA"):
+                for file in files:
+                    if file.lower().endswith((".jpg", ".png", ".jpeg")):
+                        stem = Path(file).stem
+                        key = f"eophtha_MA:{stem}"
+                        self.image_path_map[key] = Path(root_dir) / file
+                        self.mask_path_map[key] = root_ma / "Annotation_MA" / Path(root_dir).name / f"{stem}.png"
+
+        root_ex = self.root / "e_ophtha_EX" / "e_optha_EX"
+        if (root_ex / "EX").exists():
+            for root_dir, _, files in os.walk(root_ex / "EX"):
+                for file in files:
+                    if file.lower().endswith((".jpg", ".png", ".jpeg")):
+                        stem = Path(file).stem
+                        key = f"eophtha_EX:{stem}"
+                        self.image_path_map[key] = Path(root_dir) / file
+                        self.mask_path_map[key] = root_ex / "Annotation_EX" / Path(root_dir).name / f"{stem}_EX.png"
+
+    def __len__(self) -> int:
+        return len(self.image_ids) * self.samples_per_image
+
+    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor, Dict]:
+        image_id = self.image_ids[idx % len(self.image_ids)]
+
+        image_path = self.image_path_map[image_id]
+        image = cv2.imread(str(image_path))
+        if image is None:
+            raise FileNotFoundError(f"Image not found: {image_path}")
+
+        h, w = image.shape[:2]
+        
+        # Initialize masks for all classes as zeros
+        masks = [np.zeros((h, w), dtype=np.uint8) for _ in range(self.num_classes)]
+
+        if image_id.startswith("eophtha_MA:"):
+            # MA is class index 0
+            mask_path = self.mask_path_map[image_id]
+            if mask_path.exists():
+                mask = cv2.imread(str(mask_path), cv2.IMREAD_GRAYSCALE)
+                if mask is not None:
+                    masks[0] = (mask > 0).astype(np.uint8) * 255
+            valid_classes = torch.tensor([1, 0, 0, 0], dtype=torch.float32)
+
+        elif image_id.startswith("eophtha_EX:"):
+            # EX is class index 2
+            mask_path = self.mask_path_map[image_id]
+            if mask_path.exists():
+                mask = cv2.imread(str(mask_path), cv2.IMREAD_GRAYSCALE)
+                if mask is not None:
+                    masks[2] = (mask > 0).astype(np.uint8) * 255
+            valid_classes = torch.tensor([0, 0, 1, 0], dtype=torch.float32)
+        else:
+            valid_classes = torch.tensor([0, 0, 0, 0], dtype=torch.float32)
+
+        # Stack into (H, W, C) for Albumentations compatibility
+        multi_mask = np.stack(masks, axis=-1)
+
+        if self.patch_enabled:
+            image, multi_mask = self._crop_patch(image, multi_mask)
+
+        # Preprocessing
+        if self.enhancer is not None:
+            image, multi_mask = self.enhancer.process_pair(image, multi_mask)
+
+        # BGR -> RGB
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+        # Augmentation + Normalization
+        if self.transform is not None:
+            transformed = self.transform(image=image, mask=multi_mask)
+            image = transformed["image"]
+            multi_mask = transformed["mask"]
+        else:
+            image = torch.from_numpy(image.transpose(2, 0, 1)).float() / 255.0
+            multi_mask = torch.from_numpy(multi_mask).float()
+
+        if isinstance(multi_mask, torch.Tensor):
+            if multi_mask.ndim == 3 and multi_mask.shape[-1] == self.num_classes:
+                multi_mask = multi_mask.permute(2, 0, 1)
+        elif isinstance(multi_mask, np.ndarray):
+            if multi_mask.ndim == 3 and multi_mask.shape[-1] == self.num_classes:
+                multi_mask = torch.from_numpy(multi_mask.transpose(2, 0, 1)).float()
+
+        multi_mask = (multi_mask > 0).float()
+
+        meta = {
+            "image_id": image_id,
+            "image_path": str(image_path),
+            "valid_classes": valid_classes,
+        }
+
+        return image, multi_mask, meta
+
+    def _crop_patch(self, image: np.ndarray, multi_mask: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        h, w = multi_mask.shape[:2]
+        ps = min(self.patch_size, h, w)
+        lesion_mask = np.zeros((h, w), dtype=bool)
+
+        use_lesion = np.random.rand() < self.lesion_patch_prob
+        if use_lesion:
+            priority_indices = [
+                self.class_names.index(cls)
+                for cls in self.priority_classes
+                if cls in self.class_names
+            ]
+            for class_idx in priority_indices:
+                lesion_mask |= multi_mask[:, :, class_idx] > 0
+            if not lesion_mask.any():
+                lesion_mask = np.any(multi_mask > 0, axis=2)
+
+        if use_lesion and lesion_mask.any():
+            ys, xs = np.where(lesion_mask)
+            pick = np.random.randint(0, len(xs))
+            cx, cy = int(xs[pick]), int(ys[pick])
+        else:
+            cx = np.random.randint(0, w)
+            cy = np.random.randint(0, h)
+
+        x1 = int(np.clip(cx - ps // 2, 0, max(w - ps, 0)))
+        y1 = int(np.clip(cy - ps // 2, 0, max(h - ps, 0)))
+        return image[y1:y1 + ps, x1:x1 + ps], multi_mask[y1:y1 + ps, x1:x1 + ps]
+
+
 
 
 
@@ -183,17 +381,47 @@ def split_dataset(config: Dict[str, Any]) -> Dict[str, List[str]]:
             d_split = split_dataset(temp_config)
             for phase in ["train", "val", "test"]:
                 combined_split[phase].extend(d_split[phase])
+        
+        # Save combined metadata
+        split_file = sp.get("split_file", "outputs/split_metadata.json")
+        save_path = Path(split_file)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(save_path, "w", encoding="utf-8") as f:
+            json.dump({
+                "seed": sp["random_seed"],
+                "ratios": {"train": sp["train_ratio"], "val": sp["val_ratio"], "test": "combined"},
+                "counts": {k: len(v) for k, v in combined_split.items()},
+                "ids": combined_split,
+            }, f, indent=2)
         return combined_split
 
     root = Path(ds["root"])
-    image_dir = root / ds["train_images"]
-    ext = ds.get("image_ext", ".jpg")
 
-    # Discover all training image IDs
-    all_train_ids = sorted([
-        f.stem for f in image_dir.iterdir()
-        if f.suffix.lower() == ext.lower()
-    ])
+    if ds.get("name") == "eophtha":
+        all_train_ids = []
+        root_ma = root / "e_ophtha_MA" / "e_optha_MA"
+        if (root_ma / "MA").exists():
+            for root_dir, _, files in os.walk(root_ma / "MA"):
+                for file in files:
+                    if file.lower().endswith((".jpg", ".png", ".jpeg")):
+                        all_train_ids.append(f"eophtha_MA:{Path(file).stem}")
+
+        root_ex = root / "e_ophtha_EX" / "e_optha_EX"
+        if (root_ex / "EX").exists():
+            for root_dir, _, files in os.walk(root_ex / "EX"):
+                for file in files:
+                    if file.lower().endswith((".jpg", ".png", ".jpeg")):
+                        all_train_ids.append(f"eophtha_EX:{Path(file).stem}")
+        all_train_ids = sorted(list(set(all_train_ids)))
+    else:
+        image_dir = root / ds["train_images"]
+        ext = ds.get("image_ext", ".jpg")
+
+        # Discover all training image IDs
+        all_train_ids = sorted([
+            f.stem for f in image_dir.iterdir()
+            if f.suffix.lower() == ext.lower()
+        ])
 
     seed = sp["random_seed"]
     train_ratio = sp["train_ratio"]
@@ -287,7 +515,8 @@ def build_dataloaders(
                 "dataset": sub_ds_cfg,
                 "split": config["split"],
                 "preprocessing": config["preprocessing"],
-                "training": config["training"]
+                "training": config["training"],
+                "patch_training": config.get("patch_training", {}),
             }
             # Perform split dataset lookup for this single config
             d_split = split_dataset(temp_config)
@@ -295,18 +524,30 @@ def build_dataloaders(
             for phase in ["train", "val", "test"]:
                 is_train = (phase == "train")
                 transform = train_transform if is_train else val_transform
+                patch_config = config.get("patch_training", {}) if is_train else None
                 
                 is_training_split = True
                 if phase == "test" and d_cfg.get("use_official_test", False):
                     is_training_split = False
                     
-                ds_instance = IDRiDDataset(
-                    image_ids=d_split[phase],
-                    config=temp_config,
-                    transform=transform,
-                    enhancer=enhancer,
-                    is_training=is_training_split,
-                )
+                if d_cfg.get("name") == "eophtha":
+                    ds_instance = EOphthaDataset(
+                        image_ids=d_split[phase],
+                        config=temp_config,
+                        transform=transform,
+                        enhancer=enhancer,
+                        is_training=is_training_split,
+                        patch_config=patch_config,
+                    )
+                else:
+                    ds_instance = IDRiDDataset(
+                        image_ids=d_split[phase],
+                        config=temp_config,
+                        transform=transform,
+                        enhancer=enhancer,
+                        is_training=is_training_split,
+                        patch_config=patch_config,
+                    )
                 phase_datasets[phase].append(ds_instance)
         
         loaders = {}
@@ -328,18 +569,30 @@ def build_dataloaders(
     for phase, ids in split.items():
         is_train = (phase == "train")
         transform = train_transform if is_train else val_transform
+        patch_config = config.get("patch_training", {}) if is_train else None
 
         is_training_split = True
         if phase == "test" and config["dataset"].get("use_official_test", False):
             is_training_split = False
 
-        dataset = IDRiDDataset(
-            image_ids=ids,
-            config=config,
-            transform=transform,
-            enhancer=enhancer,
-            is_training=is_training_split,
-        )
+        if config["dataset"].get("name") == "eophtha":
+            dataset = EOphthaDataset(
+                image_ids=ids,
+                config=config,
+                transform=transform,
+                enhancer=enhancer,
+                is_training=is_training_split,
+                patch_config=patch_config,
+            )
+        else:
+            dataset = IDRiDDataset(
+                image_ids=ids,
+                config=config,
+                transform=transform,
+                enhancer=enhancer,
+                is_training=is_training_split,
+                patch_config=patch_config,
+            )
 
         loaders[phase] = DataLoader(
             dataset,

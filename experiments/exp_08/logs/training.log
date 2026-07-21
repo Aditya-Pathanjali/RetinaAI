@@ -1,0 +1,336 @@
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer | ============================================================
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer |   RetinaAI — Training Started
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer | ============================================================
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer |   Device:       cuda
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer |   Epochs:       120
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer |   Batch size:   2
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer |   Loss:         tversky
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer |   Optimizer:    adamw
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer |   LR:           0.0001
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer |   AMP:          True
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer |   Experiment:   exp_08
+2026-07-21 01:49:47 | [32mINFO    [0m | Trainer | ============================================================
+2026-07-21 01:51:43 | [32mINFO    [0m | Trainer | Epoch   1/120 | Train Loss: 0.9943 | Val Loss: 0.9926 | Val Dice: 0.0052 | Val IoU: 0.0026 | LR: 1.00e-04 | Time: 1m 56s | * BEST
+2026-07-21 01:51:43 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.0095 | SE: 0.0029
+2026-07-21 01:53:34 | [32mINFO    [0m | Trainer | Epoch   2/120 | Train Loss: 0.9933 | Val Loss: 0.9923 | Val Dice: 0.0051 | Val IoU: 0.0026 | LR: 2.01e-05 | Time: 1m 51s | 
+2026-07-21 01:53:34 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.0090 | SE: 0.0028
+2026-07-21 01:55:30 | [32mINFO    [0m | Trainer | Epoch   3/120 | Train Loss: 0.9931 | Val Loss: 0.9915 | Val Dice: 0.0057 | Val IoU: 0.0029 | LR: 4.01e-05 | Time: 1m 56s | * BEST
+2026-07-21 01:55:30 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.0111 | SE: 0.0032
+2026-07-21 01:57:20 | [32mINFO    [0m | Trainer | Epoch   4/120 | Train Loss: 0.9931 | Val Loss: 0.9919 | Val Dice: 0.0051 | Val IoU: 0.0026 | LR: 6.00e-05 | Time: 1m 49s | 
+2026-07-21 01:57:20 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.0091 | SE: 0.0029
+2026-07-21 01:59:11 | [32mINFO    [0m | Trainer | Epoch   5/120 | Train Loss: 0.9922 | Val Loss: 0.9888 | Val Dice: 0.0077 | Val IoU: 0.0039 | LR: 8.00e-05 | Time: 1m 51s | * BEST
+2026-07-21 01:59:11 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.0175 | SE: 0.0047
+2026-07-21 02:00:59 | [32mINFO    [0m | Trainer | Epoch   6/120 | Train Loss: 0.9918 | Val Loss: 0.9896 | Val Dice: 0.0056 | Val IoU: 0.0028 | LR: 1.00e-04 | Time: 1m 48s | 
+2026-07-21 02:00:59 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0077 | EX: 0.0106 | SE: 0.0033
+2026-07-21 02:02:51 | [32mINFO    [0m | Trainer | Epoch   7/120 | Train Loss: 0.9907 | Val Loss: 0.9893 | Val Dice: 0.0079 | Val IoU: 0.0040 | LR: 1.00e-04 | Time: 1m 51s | * BEST
+2026-07-21 02:02:51 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0075 | EX: 0.0197 | SE: 0.0033
+2026-07-21 02:04:44 | [32mINFO    [0m | Trainer | Epoch   8/120 | Train Loss: 0.9898 | Val Loss: 0.9894 | Val Dice: 0.0096 | Val IoU: 0.0048 | LR: 9.99e-05 | Time: 1m 53s | * BEST
+2026-07-21 02:04:44 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0070 | EX: 0.0269 | SE: 0.0036
+2026-07-21 02:07:01 | [32mINFO    [0m | Trainer | Epoch   9/120 | Train Loss: 0.9882 | Val Loss: 0.9859 | Val Dice: 0.0099 | Val IoU: 0.0050 | LR: 9.98e-05 | Time: 2m 16s | * BEST
+2026-07-21 02:07:01 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.0280 | SE: 0.0032
+2026-07-21 02:10:32 | [32mINFO    [0m | Trainer | Epoch  10/120 | Train Loss: 0.9868 | Val Loss: 0.9818 | Val Dice: 0.0624 | Val IoU: 0.0336 | LR: 9.97e-05 | Time: 3m 30s | * BEST
+2026-07-21 02:10:32 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0137 | EX: 0.1818 | SE: 0.0531
+2026-07-21 02:31:38 | [32mINFO    [0m | Trainer | Epoch  11/120 | Train Loss: 0.9836 | Val Loss: 0.9773 | Val Dice: 0.0855 | Val IoU: 0.0466 | LR: 9.96e-05 | Time: 21m 6s | * BEST
+2026-07-21 02:31:38 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0500 | EX: 0.2180 | SE: 0.0732
+2026-07-21 02:33:37 | [32mINFO    [0m | Trainer | Epoch  12/120 | Train Loss: 0.9799 | Val Loss: 0.9767 | Val Dice: 0.0822 | Val IoU: 0.0443 | LR: 9.94e-05 | Time: 1m 59s | 
+2026-07-21 02:33:37 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0697 | EX: 0.1950 | SE: 0.0632
+2026-07-21 02:35:26 | [32mINFO    [0m | Trainer | Epoch  13/120 | Train Loss: 0.9774 | Val Loss: 0.9752 | Val Dice: 0.0420 | Val IoU: 0.0218 | LR: 9.92e-05 | Time: 1m 48s | 
+2026-07-21 02:35:26 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0012 | HE: 0.0304 | EX: 0.1035 | SE: 0.0328
+2026-07-21 02:37:16 | [32mINFO    [0m | Trainer | Epoch  14/120 | Train Loss: 0.9729 | Val Loss: 0.9394 | Val Dice: 0.1337 | Val IoU: 0.0746 | LR: 9.89e-05 | Time: 1m 49s | * BEST
+2026-07-21 02:37:16 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0206 | HE: 0.1432 | EX: 0.2836 | SE: 0.0876
+2026-07-21 02:39:04 | [32mINFO    [0m | Trainer | Epoch  15/120 | Train Loss: 0.9517 | Val Loss: 0.8460 | Val Dice: 0.2411 | Val IoU: 0.1418 | LR: 9.86e-05 | Time: 1m 48s | * BEST
+2026-07-21 02:39:04 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.2292 | HE: 0.2432 | EX: 0.4039 | SE: 0.0883
+2026-07-21 02:40:54 | [32mINFO    [0m | Trainer | Epoch  16/120 | Train Loss: 0.9248 | Val Loss: 0.8220 | Val Dice: 0.1920 | Val IoU: 0.1078 | LR: 9.83e-05 | Time: 1m 50s | 
+2026-07-21 02:40:54 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.1860 | HE: 0.2446 | EX: 0.2592 | SE: 0.0780
+2026-07-21 02:42:44 | [32mINFO    [0m | Trainer | Epoch  17/120 | Train Loss: 0.8991 | Val Loss: 0.7984 | Val Dice: 0.2629 | Val IoU: 0.1559 | LR: 9.79e-05 | Time: 1m 49s | * BEST
+2026-07-21 02:42:44 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.2817 | HE: 0.3386 | EX: 0.3557 | SE: 0.0757
+2026-07-21 02:44:33 | [32mINFO    [0m | Trainer | Epoch  18/120 | Train Loss: 0.8793 | Val Loss: 0.7820 | Val Dice: 0.2228 | Val IoU: 0.1284 | LR: 9.76e-05 | Time: 1m 49s | 
+2026-07-21 02:44:33 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.2084 | HE: 0.3255 | EX: 0.2783 | SE: 0.0788
+2026-07-21 02:46:22 | [32mINFO    [0m | Trainer | Epoch  19/120 | Train Loss: 0.8589 | Val Loss: 0.7315 | Val Dice: 0.2880 | Val IoU: 0.1723 | LR: 9.71e-05 | Time: 1m 49s | * BEST
+2026-07-21 02:46:22 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.2953 | HE: 0.2637 | EX: 0.4357 | SE: 0.1573
+2026-07-21 02:48:10 | [32mINFO    [0m | Trainer | Epoch  20/120 | Train Loss: 0.8325 | Val Loss: 0.7166 | Val Dice: 0.3238 | Val IoU: 0.1984 | LR: 9.67e-05 | Time: 1m 48s | * BEST
+2026-07-21 02:48:10 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3078 | HE: 0.3584 | EX: 0.4693 | SE: 0.1596
+2026-07-21 02:49:59 | [32mINFO    [0m | Trainer | Epoch  21/120 | Train Loss: 0.8057 | Val Loss: 0.7074 | Val Dice: 0.3116 | Val IoU: 0.1900 | LR: 9.62e-05 | Time: 1m 48s | 
+2026-07-21 02:49:59 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3237 | HE: 0.3654 | EX: 0.4357 | SE: 0.1215
+2026-07-21 02:51:48 | [32mINFO    [0m | Trainer | Epoch  22/120 | Train Loss: 0.7868 | Val Loss: 0.6873 | Val Dice: 0.3478 | Val IoU: 0.2157 | LR: 9.57e-05 | Time: 1m 48s | * BEST
+2026-07-21 02:51:48 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3278 | HE: 0.3857 | EX: 0.4887 | SE: 0.1890
+2026-07-21 02:53:36 | [32mINFO    [0m | Trainer | Epoch  23/120 | Train Loss: 0.7667 | Val Loss: 0.6720 | Val Dice: 0.3478 | Val IoU: 0.2172 | LR: 9.51e-05 | Time: 1m 48s | * BEST
+2026-07-21 02:53:36 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3351 | HE: 0.4161 | EX: 0.4869 | SE: 0.1533
+2026-07-21 02:55:25 | [32mINFO    [0m | Trainer | Epoch  24/120 | Train Loss: 0.7557 | Val Loss: 0.6802 | Val Dice: 0.3364 | Val IoU: 0.2090 | LR: 9.46e-05 | Time: 1m 49s | 
+2026-07-21 02:55:25 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3344 | HE: 0.3735 | EX: 0.4939 | SE: 0.1439
+2026-07-21 02:57:14 | [32mINFO    [0m | Trainer | Epoch  25/120 | Train Loss: 0.7433 | Val Loss: 0.6867 | Val Dice: 0.3600 | Val IoU: 0.2243 | LR: 9.39e-05 | Time: 1m 48s | * BEST
+2026-07-21 02:57:14 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.2924 | HE: 0.4100 | EX: 0.4997 | SE: 0.2378
+2026-07-21 02:59:03 | [32mINFO    [0m | Trainer | Epoch  26/120 | Train Loss: 0.7407 | Val Loss: 0.6531 | Val Dice: 0.3542 | Val IoU: 0.2213 | LR: 9.33e-05 | Time: 1m 49s | 
+2026-07-21 02:59:03 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3344 | HE: 0.3919 | EX: 0.5076 | SE: 0.1829
+2026-07-21 03:00:51 | [32mINFO    [0m | Trainer | Epoch  27/120 | Train Loss: 0.7305 | Val Loss: 0.6611 | Val Dice: 0.3630 | Val IoU: 0.2272 | LR: 9.26e-05 | Time: 1m 48s | * BEST
+2026-07-21 03:00:51 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3315 | HE: 0.4569 | EX: 0.4696 | SE: 0.1939
+2026-07-21 03:02:40 | [32mINFO    [0m | Trainer | Epoch  28/120 | Train Loss: 0.7239 | Val Loss: 0.6513 | Val Dice: 0.3488 | Val IoU: 0.2159 | LR: 9.19e-05 | Time: 1m 48s | 
+2026-07-21 03:02:40 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3287 | HE: 0.4221 | EX: 0.4563 | SE: 0.1880
+2026-07-21 03:04:28 | [32mINFO    [0m | Trainer | Epoch  29/120 | Train Loss: 0.7219 | Val Loss: 0.6508 | Val Dice: 0.3599 | Val IoU: 0.2258 | LR: 9.12e-05 | Time: 1m 47s | 
+2026-07-21 03:04:28 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3332 | HE: 0.3687 | EX: 0.5325 | SE: 0.2050
+2026-07-21 03:06:15 | [32mINFO    [0m | Trainer | Epoch  30/120 | Train Loss: 0.7191 | Val Loss: 0.6685 | Val Dice: 0.3478 | Val IoU: 0.2157 | LR: 9.05e-05 | Time: 1m 47s | 
+2026-07-21 03:06:15 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3123 | HE: 0.3760 | EX: 0.5007 | SE: 0.2021
+2026-07-21 03:08:04 | [32mINFO    [0m | Trainer | Epoch  31/120 | Train Loss: 0.7151 | Val Loss: 0.6463 | Val Dice: 0.3679 | Val IoU: 0.2313 | LR: 8.97e-05 | Time: 1m 48s | * BEST
+2026-07-21 03:08:04 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3323 | HE: 0.4157 | EX: 0.5155 | SE: 0.2082
+2026-07-21 03:09:52 | [32mINFO    [0m | Trainer | Epoch  32/120 | Train Loss: 0.7158 | Val Loss: 0.6452 | Val Dice: 0.3595 | Val IoU: 0.2238 | LR: 8.89e-05 | Time: 1m 48s | 
+2026-07-21 03:09:52 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3291 | HE: 0.4012 | EX: 0.4923 | SE: 0.2153
+2026-07-21 03:11:40 | [32mINFO    [0m | Trainer | Epoch  33/120 | Train Loss: 0.6999 | Val Loss: 0.6618 | Val Dice: 0.3432 | Val IoU: 0.2141 | LR: 8.80e-05 | Time: 1m 48s | 
+2026-07-21 03:11:40 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3144 | HE: 0.3837 | EX: 0.5121 | SE: 0.1625
+2026-07-21 03:13:28 | [32mINFO    [0m | Trainer | Epoch  34/120 | Train Loss: 0.6988 | Val Loss: 0.6614 | Val Dice: 0.3262 | Val IoU: 0.2017 | LR: 8.72e-05 | Time: 1m 47s | 
+2026-07-21 03:13:28 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3216 | HE: 0.2220 | EX: 0.5264 | SE: 0.2349
+2026-07-21 03:15:18 | [32mINFO    [0m | Trainer | Epoch  35/120 | Train Loss: 0.6881 | Val Loss: 0.6417 | Val Dice: 0.3374 | Val IoU: 0.2096 | LR: 8.63e-05 | Time: 1m 50s | 
+2026-07-21 03:15:18 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3501 | HE: 0.3702 | EX: 0.4891 | SE: 0.1403
+2026-07-21 03:17:06 | [32mINFO    [0m | Trainer | Epoch  36/120 | Train Loss: 0.6936 | Val Loss: 0.6379 | Val Dice: 0.3739 | Val IoU: 0.2346 | LR: 8.54e-05 | Time: 1m 47s | * BEST
+2026-07-21 03:17:06 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3539 | HE: 0.3895 | EX: 0.5151 | SE: 0.2373
+2026-07-21 03:18:54 | [32mINFO    [0m | Trainer | Epoch  37/120 | Train Loss: 0.6900 | Val Loss: 0.6362 | Val Dice: 0.3655 | Val IoU: 0.2304 | LR: 8.44e-05 | Time: 1m 47s | 
+2026-07-21 03:18:54 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3469 | HE: 0.4327 | EX: 0.5065 | SE: 0.1760
+2026-07-21 03:20:42 | [32mINFO    [0m | Trainer | Epoch  38/120 | Train Loss: 0.6879 | Val Loss: 0.6385 | Val Dice: 0.3668 | Val IoU: 0.2304 | LR: 8.35e-05 | Time: 1m 48s | 
+2026-07-21 03:20:42 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3487 | HE: 0.3803 | EX: 0.5266 | SE: 0.2117
+2026-07-21 03:22:32 | [32mINFO    [0m | Trainer | Epoch  39/120 | Train Loss: 0.6850 | Val Loss: 0.6330 | Val Dice: 0.3699 | Val IoU: 0.2337 | LR: 8.25e-05 | Time: 1m 49s | 
+2026-07-21 03:22:32 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3520 | HE: 0.4508 | EX: 0.4994 | SE: 0.1774
+2026-07-21 03:24:21 | [32mINFO    [0m | Trainer | Epoch  40/120 | Train Loss: 0.6909 | Val Loss: 0.6223 | Val Dice: 0.3823 | Val IoU: 0.2416 | LR: 8.15e-05 | Time: 1m 49s | * BEST
+2026-07-21 03:24:21 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3616 | HE: 0.4405 | EX: 0.5071 | SE: 0.2202
+2026-07-21 03:26:15 | [32mINFO    [0m | Trainer | Epoch  41/120 | Train Loss: 0.6874 | Val Loss: 0.6313 | Val Dice: 0.3735 | Val IoU: 0.2353 | LR: 8.05e-05 | Time: 1m 54s | 
+2026-07-21 03:26:15 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3410 | HE: 0.4103 | EX: 0.5228 | SE: 0.2200
+2026-07-21 03:28:06 | [32mINFO    [0m | Trainer | Epoch  42/120 | Train Loss: 0.6720 | Val Loss: 0.6385 | Val Dice: 0.3561 | Val IoU: 0.2221 | LR: 7.94e-05 | Time: 1m 51s | 
+2026-07-21 03:28:06 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3549 | HE: 0.4071 | EX: 0.4837 | SE: 0.1788
+2026-07-21 03:29:54 | [32mINFO    [0m | Trainer | Epoch  43/120 | Train Loss: 0.6819 | Val Loss: 0.6531 | Val Dice: 0.3801 | Val IoU: 0.2397 | LR: 7.83e-05 | Time: 1m 47s | 
+2026-07-21 03:29:54 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3224 | HE: 0.4236 | EX: 0.5238 | SE: 0.2506
+2026-07-21 03:31:43 | [32mINFO    [0m | Trainer | Epoch  44/120 | Train Loss: 0.6692 | Val Loss: 0.6300 | Val Dice: 0.3821 | Val IoU: 0.2415 | LR: 7.73e-05 | Time: 1m 48s | 
+2026-07-21 03:31:43 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3550 | HE: 0.4363 | EX: 0.5132 | SE: 0.2237
+2026-07-21 03:33:31 | [32mINFO    [0m | Trainer | Epoch  45/120 | Train Loss: 0.6664 | Val Loss: 0.6405 | Val Dice: 0.3714 | Val IoU: 0.2323 | LR: 7.61e-05 | Time: 1m 48s | 
+2026-07-21 03:33:31 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3380 | HE: 0.4255 | EX: 0.4892 | SE: 0.2330
+2026-07-21 03:35:20 | [32mINFO    [0m | Trainer | Epoch  46/120 | Train Loss: 0.6605 | Val Loss: 0.6334 | Val Dice: 0.3676 | Val IoU: 0.2301 | LR: 7.50e-05 | Time: 1m 48s | 
+2026-07-21 03:35:20 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3343 | HE: 0.3864 | EX: 0.5169 | SE: 0.2326
+2026-07-21 03:37:08 | [32mINFO    [0m | Trainer | Epoch  47/120 | Train Loss: 0.6604 | Val Loss: 0.6235 | Val Dice: 0.3927 | Val IoU: 0.2512 | LR: 7.39e-05 | Time: 1m 47s | * BEST
+2026-07-21 03:37:08 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3465 | HE: 0.4800 | EX: 0.5269 | SE: 0.2172
+2026-07-21 03:38:56 | [32mINFO    [0m | Trainer | Epoch  48/120 | Train Loss: 0.6684 | Val Loss: 0.6035 | Val Dice: 0.3861 | Val IoU: 0.2473 | LR: 7.27e-05 | Time: 1m 47s | 
+2026-07-21 03:38:56 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3563 | HE: 0.4862 | EX: 0.5193 | SE: 0.1826
+2026-07-21 03:40:46 | [32mINFO    [0m | Trainer | Epoch  49/120 | Train Loss: 0.6638 | Val Loss: 0.5953 | Val Dice: 0.4006 | Val IoU: 0.2569 | LR: 7.16e-05 | Time: 1m 49s | * BEST
+2026-07-21 03:40:46 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3596 | HE: 0.4907 | EX: 0.5218 | SE: 0.2305
+2026-07-21 03:42:33 | [32mINFO    [0m | Trainer | Epoch  50/120 | Train Loss: 0.6587 | Val Loss: 0.6163 | Val Dice: 0.3888 | Val IoU: 0.2463 | LR: 7.04e-05 | Time: 1m 47s | 
+2026-07-21 03:42:33 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3500 | HE: 0.4340 | EX: 0.5228 | SE: 0.2486
+2026-07-21 03:44:29 | [32mINFO    [0m | Trainer | Epoch  51/120 | Train Loss: 0.6564 | Val Loss: 0.6034 | Val Dice: 0.3974 | Val IoU: 0.2522 | LR: 6.92e-05 | Time: 1m 56s | 
+2026-07-21 03:44:29 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3628 | HE: 0.4543 | EX: 0.5088 | SE: 0.2638
+2026-07-21 03:46:19 | [32mINFO    [0m | Trainer | Epoch  52/120 | Train Loss: 0.6516 | Val Loss: 0.5940 | Val Dice: 0.3877 | Val IoU: 0.2454 | LR: 6.80e-05 | Time: 1m 49s | 
+2026-07-21 03:46:19 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3575 | HE: 0.4346 | EX: 0.5181 | SE: 0.2405
+2026-07-21 03:48:08 | [32mINFO    [0m | Trainer | Epoch  53/120 | Train Loss: 0.6468 | Val Loss: 0.5878 | Val Dice: 0.4003 | Val IoU: 0.2551 | LR: 6.67e-05 | Time: 1m 48s | 
+2026-07-21 03:48:08 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3543 | HE: 0.4913 | EX: 0.4987 | SE: 0.2567
+2026-07-21 03:49:57 | [32mINFO    [0m | Trainer | Epoch  54/120 | Train Loss: 0.6449 | Val Loss: 0.6036 | Val Dice: 0.3894 | Val IoU: 0.2478 | LR: 6.55e-05 | Time: 1m 49s | 
+2026-07-21 03:49:57 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3574 | HE: 0.4570 | EX: 0.5227 | SE: 0.2203
+2026-07-21 03:51:45 | [32mINFO    [0m | Trainer | Epoch  55/120 | Train Loss: 0.6455 | Val Loss: 0.6107 | Val Dice: 0.3955 | Val IoU: 0.2530 | LR: 6.42e-05 | Time: 1m 47s | 
+2026-07-21 03:51:45 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3495 | HE: 0.4816 | EX: 0.5243 | SE: 0.2266
+2026-07-21 03:53:33 | [32mINFO    [0m | Trainer | Epoch  56/120 | Train Loss: 0.6424 | Val Loss: 0.5947 | Val Dice: 0.3951 | Val IoU: 0.2521 | LR: 6.30e-05 | Time: 1m 47s | 
+2026-07-21 03:53:33 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3502 | HE: 0.4740 | EX: 0.5208 | SE: 0.2355
+2026-07-21 03:55:21 | [32mINFO    [0m | Trainer | Epoch  57/120 | Train Loss: 0.6392 | Val Loss: 0.5938 | Val Dice: 0.3877 | Val IoU: 0.2448 | LR: 6.17e-05 | Time: 1m 48s | 
+2026-07-21 03:55:21 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3537 | HE: 0.4504 | EX: 0.4974 | SE: 0.2494
+2026-07-21 03:57:10 | [32mINFO    [0m | Trainer | Epoch  58/120 | Train Loss: 0.6485 | Val Loss: 0.6012 | Val Dice: 0.3631 | Val IoU: 0.2260 | LR: 6.04e-05 | Time: 1m 48s | 
+2026-07-21 03:57:10 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3582 | HE: 0.3318 | EX: 0.5120 | SE: 0.2503
+2026-07-21 03:58:58 | [32mINFO    [0m | Trainer | Epoch  59/120 | Train Loss: 0.6406 | Val Loss: 0.5905 | Val Dice: 0.4000 | Val IoU: 0.2547 | LR: 5.92e-05 | Time: 1m 47s | 
+2026-07-21 03:58:58 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3629 | HE: 0.4593 | EX: 0.5191 | SE: 0.2587
+2026-07-21 04:00:47 | [32mINFO    [0m | Trainer | Epoch  60/120 | Train Loss: 0.6391 | Val Loss: 0.6014 | Val Dice: 0.3926 | Val IoU: 0.2493 | LR: 5.79e-05 | Time: 1m 48s | 
+2026-07-21 04:00:47 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3419 | HE: 0.4430 | EX: 0.5274 | SE: 0.2580
+2026-07-21 04:02:35 | [32mINFO    [0m | Trainer | Epoch  61/120 | Train Loss: 0.6323 | Val Loss: 0.5900 | Val Dice: 0.4143 | Val IoU: 0.2660 | LR: 5.66e-05 | Time: 1m 48s | * BEST
+2026-07-21 04:02:35 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3631 | HE: 0.4955 | EX: 0.5180 | SE: 0.2807
+2026-07-21 04:04:23 | [32mINFO    [0m | Trainer | Epoch  62/120 | Train Loss: 0.6407 | Val Loss: 0.6049 | Val Dice: 0.3973 | Val IoU: 0.2542 | LR: 5.53e-05 | Time: 1m 47s | 
+2026-07-21 04:04:23 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3566 | HE: 0.4665 | EX: 0.5345 | SE: 0.2317
+2026-07-21 04:06:11 | [32mINFO    [0m | Trainer | Epoch  63/120 | Train Loss: 0.6256 | Val Loss: 0.5955 | Val Dice: 0.4095 | Val IoU: 0.2625 | LR: 5.40e-05 | Time: 1m 47s | 
+2026-07-21 04:06:11 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3470 | HE: 0.4959 | EX: 0.5186 | SE: 0.2764
+2026-07-21 04:08:00 | [32mINFO    [0m | Trainer | Epoch  64/120 | Train Loss: 0.6270 | Val Loss: 0.5966 | Val Dice: 0.3902 | Val IoU: 0.2473 | LR: 5.27e-05 | Time: 1m 49s | 
+2026-07-21 04:08:00 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3481 | HE: 0.4596 | EX: 0.5080 | SE: 0.2451
+2026-07-21 04:09:48 | [32mINFO    [0m | Trainer | Epoch  65/120 | Train Loss: 0.6226 | Val Loss: 0.6091 | Val Dice: 0.3801 | Val IoU: 0.2395 | LR: 5.14e-05 | Time: 1m 48s | 
+2026-07-21 04:09:48 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3529 | HE: 0.4005 | EX: 0.5244 | SE: 0.2427
+2026-07-21 04:11:37 | [32mINFO    [0m | Trainer | Epoch  66/120 | Train Loss: 0.6334 | Val Loss: 0.5957 | Val Dice: 0.3919 | Val IoU: 0.2482 | LR: 5.01e-05 | Time: 1m 48s | 
+2026-07-21 04:11:37 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3612 | HE: 0.4347 | EX: 0.5169 | SE: 0.2548
+2026-07-21 04:13:25 | [32mINFO    [0m | Trainer | Epoch  67/120 | Train Loss: 0.6301 | Val Loss: 0.6027 | Val Dice: 0.4087 | Val IoU: 0.2614 | LR: 4.87e-05 | Time: 1m 48s | 
+2026-07-21 04:13:25 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3402 | HE: 0.4923 | EX: 0.5132 | SE: 0.2893
+2026-07-21 04:15:14 | [32mINFO    [0m | Trainer | Epoch  68/120 | Train Loss: 0.6238 | Val Loss: 0.5647 | Val Dice: 0.4005 | Val IoU: 0.2542 | LR: 4.74e-05 | Time: 1m 48s | 
+2026-07-21 04:15:14 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3767 | HE: 0.4298 | EX: 0.5198 | SE: 0.2756
+2026-07-21 04:17:02 | [32mINFO    [0m | Trainer | Epoch  69/120 | Train Loss: 0.6264 | Val Loss: 0.6030 | Val Dice: 0.4062 | Val IoU: 0.2605 | LR: 4.61e-05 | Time: 1m 48s | 
+2026-07-21 04:17:02 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3661 | HE: 0.4851 | EX: 0.5241 | SE: 0.2497
+2026-07-21 04:18:51 | [32mINFO    [0m | Trainer | Epoch  70/120 | Train Loss: 0.6285 | Val Loss: 0.5972 | Val Dice: 0.3936 | Val IoU: 0.2472 | LR: 4.48e-05 | Time: 1m 48s | 
+2026-07-21 04:18:51 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3438 | HE: 0.4292 | EX: 0.4850 | SE: 0.3164
+2026-07-21 04:20:40 | [32mINFO    [0m | Trainer | Epoch  71/120 | Train Loss: 0.6210 | Val Loss: 0.5926 | Val Dice: 0.3934 | Val IoU: 0.2485 | LR: 4.35e-05 | Time: 1m 48s | 
+2026-07-21 04:20:40 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3585 | HE: 0.4017 | EX: 0.5243 | SE: 0.2889
+2026-07-21 04:22:27 | [32mINFO    [0m | Trainer | Epoch  72/120 | Train Loss: 0.6170 | Val Loss: 0.5931 | Val Dice: 0.3932 | Val IoU: 0.2487 | LR: 4.22e-05 | Time: 1m 47s | 
+2026-07-21 04:22:27 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3651 | HE: 0.4095 | EX: 0.5252 | SE: 0.2729
+2026-07-21 04:24:16 | [32mINFO    [0m | Trainer | Epoch  73/120 | Train Loss: 0.6180 | Val Loss: 0.5791 | Val Dice: 0.4015 | Val IoU: 0.2551 | LR: 4.09e-05 | Time: 1m 48s | 
+2026-07-21 04:24:16 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3680 | HE: 0.4415 | EX: 0.5188 | SE: 0.2778
+2026-07-21 04:26:04 | [32mINFO    [0m | Trainer | Epoch  74/120 | Train Loss: 0.6104 | Val Loss: 0.5994 | Val Dice: 0.3939 | Val IoU: 0.2508 | LR: 3.97e-05 | Time: 1m 48s | 
+2026-07-21 04:26:04 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3545 | HE: 0.4617 | EX: 0.5206 | SE: 0.2390
+2026-07-21 04:27:53 | [32mINFO    [0m | Trainer | Epoch  75/120 | Train Loss: 0.6093 | Val Loss: 0.5815 | Val Dice: 0.3999 | Val IoU: 0.2550 | LR: 3.84e-05 | Time: 1m 48s | 
+2026-07-21 04:27:53 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3678 | HE: 0.4453 | EX: 0.5318 | SE: 0.2549
+2026-07-21 04:29:42 | [32mINFO    [0m | Trainer | Epoch  76/120 | Train Loss: 0.6087 | Val Loss: 0.5905 | Val Dice: 0.3680 | Val IoU: 0.2292 | LR: 3.71e-05 | Time: 1m 49s | 
+2026-07-21 04:29:42 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3411 | HE: 0.3371 | EX: 0.5125 | SE: 0.2815
+2026-07-21 04:31:30 | [32mINFO    [0m | Trainer | Epoch  77/120 | Train Loss: 0.6118 | Val Loss: 0.5937 | Val Dice: 0.4091 | Val IoU: 0.2616 | LR: 3.59e-05 | Time: 1m 47s | 
+2026-07-21 04:31:30 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3587 | HE: 0.4762 | EX: 0.5211 | SE: 0.2805
+2026-07-21 04:33:19 | [32mINFO    [0m | Trainer | Epoch  78/120 | Train Loss: 0.6133 | Val Loss: 0.5907 | Val Dice: 0.4029 | Val IoU: 0.2572 | LR: 3.46e-05 | Time: 1m 48s | 
+2026-07-21 04:33:19 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3621 | HE: 0.4598 | EX: 0.5284 | SE: 0.2614
+2026-07-21 04:35:08 | [32mINFO    [0m | Trainer | Epoch  79/120 | Train Loss: 0.6032 | Val Loss: 0.5859 | Val Dice: 0.3850 | Val IoU: 0.2435 | LR: 3.34e-05 | Time: 1m 49s | 
+2026-07-21 04:35:08 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3617 | HE: 0.4220 | EX: 0.5228 | SE: 0.2334
+2026-07-21 04:36:56 | [32mINFO    [0m | Trainer | Epoch  80/120 | Train Loss: 0.6037 | Val Loss: 0.5989 | Val Dice: 0.3913 | Val IoU: 0.2464 | LR: 3.21e-05 | Time: 1m 48s | 
+2026-07-21 04:36:56 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3621 | HE: 0.3920 | EX: 0.5150 | SE: 0.2961
+2026-07-21 04:38:45 | [32mINFO    [0m | Trainer | Epoch  81/120 | Train Loss: 0.6142 | Val Loss: 0.5831 | Val Dice: 0.4017 | Val IoU: 0.2557 | LR: 3.09e-05 | Time: 1m 48s | 
+2026-07-21 04:38:45 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3626 | HE: 0.4546 | EX: 0.5201 | SE: 0.2695
+2026-07-21 04:40:32 | [32mINFO    [0m | Trainer | Epoch  82/120 | Train Loss: 0.5978 | Val Loss: 0.5839 | Val Dice: 0.3966 | Val IoU: 0.2519 | LR: 2.97e-05 | Time: 1m 47s | 
+2026-07-21 04:40:32 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3558 | HE: 0.4439 | EX: 0.5235 | SE: 0.2632
+2026-07-21 04:42:20 | [32mINFO    [0m | Trainer | Epoch  83/120 | Train Loss: 0.5989 | Val Loss: 0.5841 | Val Dice: 0.3915 | Val IoU: 0.2480 | LR: 2.85e-05 | Time: 1m 48s | 
+2026-07-21 04:42:20 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3576 | HE: 0.4101 | EX: 0.5340 | SE: 0.2642
+2026-07-21 04:44:09 | [32mINFO    [0m | Trainer | Epoch  84/120 | Train Loss: 0.5997 | Val Loss: 0.5896 | Val Dice: 0.3833 | Val IoU: 0.2421 | LR: 2.74e-05 | Time: 1m 48s | 
+2026-07-21 04:44:09 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3582 | HE: 0.4114 | EX: 0.5238 | SE: 0.2399
+2026-07-21 04:45:57 | [32mINFO    [0m | Trainer | Epoch  85/120 | Train Loss: 0.6067 | Val Loss: 0.5981 | Val Dice: 0.4110 | Val IoU: 0.2639 | LR: 2.62e-05 | Time: 1m 48s | 
+2026-07-21 04:45:57 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3472 | HE: 0.5051 | EX: 0.5167 | SE: 0.2751
+2026-07-21 04:47:46 | [32mINFO    [0m | Trainer | Epoch  86/120 | Train Loss: 0.6105 | Val Loss: 0.5896 | Val Dice: 0.4145 | Val IoU: 0.2658 | LR: 2.51e-05 | Time: 1m 48s | * BEST
+2026-07-21 04:47:46 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3602 | HE: 0.4987 | EX: 0.5105 | SE: 0.2886
+2026-07-21 04:49:36 | [32mINFO    [0m | Trainer | Epoch  87/120 | Train Loss: 0.5967 | Val Loss: 0.5847 | Val Dice: 0.4063 | Val IoU: 0.2593 | LR: 2.40e-05 | Time: 1m 49s | 
+2026-07-21 04:49:36 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3639 | HE: 0.4589 | EX: 0.5251 | SE: 0.2773
+2026-07-21 04:51:25 | [32mINFO    [0m | Trainer | Epoch  88/120 | Train Loss: 0.6097 | Val Loss: 0.5895 | Val Dice: 0.3980 | Val IoU: 0.2518 | LR: 2.28e-05 | Time: 1m 49s | 
+2026-07-21 04:51:25 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3615 | HE: 0.4161 | EX: 0.5203 | SE: 0.2940
+2026-07-21 04:53:14 | [32mINFO    [0m | Trainer | Epoch  89/120 | Train Loss: 0.5996 | Val Loss: 0.5803 | Val Dice: 0.4127 | Val IoU: 0.2640 | LR: 2.18e-05 | Time: 1m 48s | 
+2026-07-21 04:53:14 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3721 | HE: 0.4656 | EX: 0.5234 | SE: 0.2897
+2026-07-21 04:55:01 | [32mINFO    [0m | Trainer | Epoch  90/120 | Train Loss: 0.5940 | Val Loss: 0.5789 | Val Dice: 0.4073 | Val IoU: 0.2603 | LR: 2.07e-05 | Time: 1m 47s | 
+2026-07-21 04:55:01 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3693 | HE: 0.4661 | EX: 0.5237 | SE: 0.2702
+2026-07-21 04:56:49 | [32mINFO    [0m | Trainer | Epoch  91/120 | Train Loss: 0.6035 | Val Loss: 0.5953 | Val Dice: 0.4014 | Val IoU: 0.2569 | LR: 1.96e-05 | Time: 1m 48s | 
+2026-07-21 04:56:49 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3460 | HE: 0.4935 | EX: 0.5164 | SE: 0.2497
+2026-07-21 04:58:37 | [32mINFO    [0m | Trainer | Epoch  92/120 | Train Loss: 0.5946 | Val Loss: 0.5823 | Val Dice: 0.3995 | Val IoU: 0.2534 | LR: 1.86e-05 | Time: 1m 47s | 
+2026-07-21 04:58:37 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3623 | HE: 0.4275 | EX: 0.5234 | SE: 0.2847
+2026-07-21 05:00:27 | [32mINFO    [0m | Trainer | Epoch  93/120 | Train Loss: 0.5974 | Val Loss: 0.5755 | Val Dice: 0.4169 | Val IoU: 0.2684 | LR: 1.76e-05 | Time: 1m 49s | * BEST
+2026-07-21 05:00:27 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3632 | HE: 0.5047 | EX: 0.5220 | SE: 0.2776
+2026-07-21 05:02:15 | [32mINFO    [0m | Trainer | Epoch  94/120 | Train Loss: 0.5844 | Val Loss: 0.5817 | Val Dice: 0.4229 | Val IoU: 0.2737 | LR: 1.66e-05 | Time: 1m 48s | * BEST
+2026-07-21 05:02:15 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3616 | HE: 0.5272 | EX: 0.5211 | SE: 0.2817
+2026-07-21 05:04:03 | [32mINFO    [0m | Trainer | Epoch  95/120 | Train Loss: 0.6055 | Val Loss: 0.5756 | Val Dice: 0.4132 | Val IoU: 0.2656 | LR: 1.57e-05 | Time: 1m 47s | 
+2026-07-21 05:04:03 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3583 | HE: 0.5119 | EX: 0.5112 | SE: 0.2712
+2026-07-21 05:05:51 | [32mINFO    [0m | Trainer | Epoch  96/120 | Train Loss: 0.5826 | Val Loss: 0.5809 | Val Dice: 0.4155 | Val IoU: 0.2679 | LR: 1.47e-05 | Time: 1m 48s | 
+2026-07-21 05:05:51 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3665 | HE: 0.5102 | EX: 0.5228 | SE: 0.2623
+2026-07-21 05:07:39 | [32mINFO    [0m | Trainer | Epoch  97/120 | Train Loss: 0.5974 | Val Loss: 0.5812 | Val Dice: 0.4033 | Val IoU: 0.2565 | LR: 1.38e-05 | Time: 1m 47s | 
+2026-07-21 05:07:39 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3621 | HE: 0.4512 | EX: 0.5174 | SE: 0.2824
+2026-07-21 05:09:27 | [32mINFO    [0m | Trainer | Epoch  98/120 | Train Loss: 0.6008 | Val Loss: 0.5841 | Val Dice: 0.3998 | Val IoU: 0.2537 | LR: 1.29e-05 | Time: 1m 48s | 
+2026-07-21 05:09:27 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3667 | HE: 0.4317 | EX: 0.5214 | SE: 0.2795
+2026-07-21 05:11:16 | [32mINFO    [0m | Trainer | Epoch  99/120 | Train Loss: 0.6011 | Val Loss: 0.5765 | Val Dice: 0.4107 | Val IoU: 0.2627 | LR: 1.21e-05 | Time: 1m 48s | 
+2026-07-21 05:11:16 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3720 | HE: 0.4692 | EX: 0.5225 | SE: 0.2793
+2026-07-21 05:13:04 | [32mINFO    [0m | Trainer | Epoch 100/120 | Train Loss: 0.5882 | Val Loss: 0.5865 | Val Dice: 0.3916 | Val IoU: 0.2474 | LR: 1.12e-05 | Time: 1m 48s | 
+2026-07-21 05:13:04 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3652 | HE: 0.4123 | EX: 0.5187 | SE: 0.2702
+2026-07-21 05:14:52 | [32mINFO    [0m | Trainer | Epoch 101/120 | Train Loss: 0.5906 | Val Loss: 0.5795 | Val Dice: 0.3832 | Val IoU: 0.2410 | LR: 1.04e-05 | Time: 1m 48s | 
+2026-07-21 05:14:52 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3672 | HE: 0.3775 | EX: 0.5221 | SE: 0.2658
+2026-07-21 05:16:40 | [32mINFO    [0m | Trainer | Epoch 102/120 | Train Loss: 0.5947 | Val Loss: 0.5900 | Val Dice: 0.3917 | Val IoU: 0.2477 | LR: 9.64e-06 | Time: 1m 47s | 
+2026-07-21 05:16:40 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3622 | HE: 0.4102 | EX: 0.5241 | SE: 0.2704
+2026-07-21 05:18:28 | [32mINFO    [0m | Trainer | Epoch 103/120 | Train Loss: 0.5751 | Val Loss: 0.5845 | Val Dice: 0.4015 | Val IoU: 0.2549 | LR: 8.88e-06 | Time: 1m 47s | 
+2026-07-21 05:18:28 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3649 | HE: 0.4434 | EX: 0.5145 | SE: 0.2834
+2026-07-21 05:20:17 | [32mINFO    [0m | Trainer | Epoch 104/120 | Train Loss: 0.5929 | Val Loss: 0.5789 | Val Dice: 0.4085 | Val IoU: 0.2611 | LR: 8.16e-06 | Time: 1m 48s | 
+2026-07-21 05:20:17 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3684 | HE: 0.4721 | EX: 0.5201 | SE: 0.2732
+2026-07-21 05:22:04 | [32mINFO    [0m | Trainer | Epoch 105/120 | Train Loss: 0.5944 | Val Loss: 0.5785 | Val Dice: 0.3961 | Val IoU: 0.2511 | LR: 7.46e-06 | Time: 1m 47s | 
+2026-07-21 05:22:04 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3619 | HE: 0.4272 | EX: 0.5225 | SE: 0.2730
+2026-07-21 05:23:52 | [32mINFO    [0m | Trainer | Epoch 106/120 | Train Loss: 0.5898 | Val Loss: 0.5823 | Val Dice: 0.4130 | Val IoU: 0.2646 | LR: 6.79e-06 | Time: 1m 47s | 
+2026-07-21 05:23:52 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3628 | HE: 0.4858 | EX: 0.5183 | SE: 0.2852
+2026-07-21 05:25:38 | [32mINFO    [0m | Trainer | Epoch 107/120 | Train Loss: 0.5961 | Val Loss: 0.5844 | Val Dice: 0.4026 | Val IoU: 0.2557 | LR: 6.15e-06 | Time: 1m 46s | 
+2026-07-21 05:25:38 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3613 | HE: 0.4455 | EX: 0.5154 | SE: 0.2883
+2026-07-21 05:27:25 | [32mINFO    [0m | Trainer | Epoch 108/120 | Train Loss: 0.5980 | Val Loss: 0.5761 | Val Dice: 0.4074 | Val IoU: 0.2596 | LR: 5.54e-06 | Time: 1m 46s | 
+2026-07-21 05:27:25 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3674 | HE: 0.4555 | EX: 0.5194 | SE: 0.2873
+2026-07-21 05:29:13 | [32mINFO    [0m | Trainer | Epoch 109/120 | Train Loss: 0.5934 | Val Loss: 0.5826 | Val Dice: 0.3937 | Val IoU: 0.2485 | LR: 4.97e-06 | Time: 1m 48s | 
+2026-07-21 05:29:13 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3622 | HE: 0.4097 | EX: 0.5162 | SE: 0.2869
+2026-07-21 05:31:02 | [32mINFO    [0m | Trainer | Epoch 110/120 | Train Loss: 0.5927 | Val Loss: 0.5861 | Val Dice: 0.3972 | Val IoU: 0.2512 | LR: 4.42e-06 | Time: 1m 48s | 
+2026-07-21 05:31:02 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3615 | HE: 0.4200 | EX: 0.5169 | SE: 0.2905
+2026-07-21 05:32:51 | [32mINFO    [0m | Trainer | Epoch 111/120 | Train Loss: 0.5860 | Val Loss: 0.5842 | Val Dice: 0.4063 | Val IoU: 0.2588 | LR: 3.90e-06 | Time: 1m 49s | 
+2026-07-21 05:32:51 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3630 | HE: 0.4570 | EX: 0.5191 | SE: 0.2862
+2026-07-21 05:34:40 | [32mINFO    [0m | Trainer | Epoch 112/120 | Train Loss: 0.5859 | Val Loss: 0.5809 | Val Dice: 0.4054 | Val IoU: 0.2584 | LR: 3.42e-06 | Time: 1m 48s | 
+2026-07-21 05:34:40 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3652 | HE: 0.4552 | EX: 0.5228 | SE: 0.2784
+2026-07-21 05:36:28 | [32mINFO    [0m | Trainer | Epoch 113/120 | Train Loss: 0.5901 | Val Loss: 0.5889 | Val Dice: 0.4066 | Val IoU: 0.2592 | LR: 2.97e-06 | Time: 1m 48s | 
+2026-07-21 05:36:28 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3639 | HE: 0.4566 | EX: 0.5210 | SE: 0.2849
+2026-07-21 05:38:16 | [32mINFO    [0m | Trainer | Epoch 114/120 | Train Loss: 0.5870 | Val Loss: 0.5861 | Val Dice: 0.3977 | Val IoU: 0.2518 | LR: 2.54e-06 | Time: 1m 48s | 
+2026-07-21 05:38:16 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3682 | HE: 0.4188 | EX: 0.5201 | SE: 0.2839
+2026-07-21 05:40:05 | [32mINFO    [0m | Trainer | Epoch 115/120 | Train Loss: 0.5832 | Val Loss: 0.5891 | Val Dice: 0.4078 | Val IoU: 0.2603 | LR: 2.16e-06 | Time: 1m 48s | 
+2026-07-21 05:40:05 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3639 | HE: 0.4654 | EX: 0.5193 | SE: 0.2827
+2026-07-21 05:41:53 | [32mINFO    [0m | Trainer | Epoch 116/120 | Train Loss: 0.5977 | Val Loss: 0.5845 | Val Dice: 0.4085 | Val IoU: 0.2609 | LR: 1.80e-06 | Time: 1m 48s | 
+2026-07-21 05:41:53 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3657 | HE: 0.4658 | EX: 0.5218 | SE: 0.2808
+2026-07-21 05:43:41 | [32mINFO    [0m | Trainer | Epoch 117/120 | Train Loss: 0.5797 | Val Loss: 0.5793 | Val Dice: 0.4106 | Val IoU: 0.2623 | LR: 1.48e-06 | Time: 1m 47s | 
+2026-07-21 05:43:41 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3687 | HE: 0.4700 | EX: 0.5177 | SE: 0.2858
+2026-07-21 05:45:30 | [32mINFO    [0m | Trainer | Epoch 118/120 | Train Loss: 0.5893 | Val Loss: 0.5826 | Val Dice: 0.4037 | Val IoU: 0.2564 | LR: 1.19e-06 | Time: 1m 48s | 
+2026-07-21 05:45:30 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3670 | HE: 0.4405 | EX: 0.5165 | SE: 0.2910
+2026-07-21 05:47:19 | [32mINFO    [0m | Trainer | Epoch 119/120 | Train Loss: 0.5954 | Val Loss: 0.5847 | Val Dice: 0.4191 | Val IoU: 0.2697 | LR: 9.36e-07 | Time: 1m 49s | 
+2026-07-21 05:47:19 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3651 | HE: 0.5024 | EX: 0.5195 | SE: 0.2894
+2026-07-21 05:49:07 | [32mINFO    [0m | Trainer | Epoch 120/120 | Train Loss: 0.5895 | Val Loss: 0.5835 | Val Dice: 0.4108 | Val IoU: 0.2625 | LR: 7.15e-07 | Time: 1m 47s | 
+2026-07-21 05:49:07 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3654 | HE: 0.4697 | EX: 0.5195 | SE: 0.2885
+2026-07-21 05:49:07 | [32mINFO    [0m | Trainer | ============================================================
+2026-07-21 05:49:07 | [32mINFO    [0m | Trainer |   Training completed in 3h 59m 20s
+2026-07-21 05:49:07 | [32mINFO    [0m | Trainer |   Best Val Dice: 0.4229 (epoch 94)
+2026-07-21 05:49:07 | [32mINFO    [0m | Trainer | ============================================================
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer | ============================================================
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer |   RetinaAI — Training Started
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer | ============================================================
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer |   Device:       cuda
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer |   Epochs:       120
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer |   Batch size:   2
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer |   Loss:         tversky
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer |   Optimizer:    adamw
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer |   LR:           0.0001
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer |   AMP:          True
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer |   Experiment:   exp_08
+2026-07-21 09:40:39 | [32mINFO    [0m | Trainer | ============================================================
+2026-07-21 09:43:34 | [32mINFO    [0m | Trainer | Epoch   1/120 | Train Loss: 0.9944 | Val Loss: 0.9916 | Val Dice: 0.0057 | Val IoU: 0.0029 | LR: 1.00e-04 | Time: 2m 54s | * BEST
+2026-07-21 09:43:34 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.0112 | SE: 0.0032
+2026-07-21 09:48:09 | [32mINFO    [0m | Trainer | Epoch   2/120 | Train Loss: 0.9935 | Val Loss: 0.9907 | Val Dice: 0.0063 | Val IoU: 0.0032 | LR: 2.01e-05 | Time: 4m 34s | * BEST
+2026-07-21 09:48:09 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.0133 | SE: 0.0034
+2026-07-21 09:52:39 | [32mINFO    [0m | Trainer | Epoch   3/120 | Train Loss: 0.9933 | Val Loss: 0.9896 | Val Dice: 0.0071 | Val IoU: 0.0036 | LR: 4.01e-05 | Time: 4m 29s | * BEST
+2026-07-21 09:52:39 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.0158 | SE: 0.0040
+2026-07-21 09:56:28 | [32mINFO    [0m | Trainer | Epoch   4/120 | Train Loss: 0.9933 | Val Loss: 0.9925 | Val Dice: 0.0060 | Val IoU: 0.0030 | LR: 6.00e-05 | Time: 3m 48s | 
+2026-07-21 09:56:28 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.0121 | SE: 0.0035
+2026-07-21 09:59:42 | [32mINFO    [0m | Trainer | Epoch   5/120 | Train Loss: 0.9926 | Val Loss: 0.9896 | Val Dice: 0.0111 | Val IoU: 0.0056 | LR: 8.00e-05 | Time: 3m 13s | * BEST
+2026-07-21 09:59:42 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.0304 | SE: 0.0056
+2026-07-21 10:01:31 | [32mINFO    [0m | Trainer | Epoch   6/120 | Train Loss: 0.9916 | Val Loss: 0.9868 | Val Dice: 0.0634 | Val IoU: 0.0358 | LR: 1.00e-04 | Time: 1m 49s | * BEST
+2026-07-21 10:01:31 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0077 | EX: 0.2415 | SE: 0.0034
+2026-07-21 10:04:02 | [32mINFO    [0m | Trainer | Epoch   7/120 | Train Loss: 0.9919 | Val Loss: 0.9846 | Val Dice: 0.0652 | Val IoU: 0.0368 | LR: 1.00e-04 | Time: 2m 30s | * BEST
+2026-07-21 10:04:02 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0087 | EX: 0.2426 | SE: 0.0087
+2026-07-21 10:05:54 | [32mINFO    [0m | Trainer | Epoch   8/120 | Train Loss: 0.9909 | Val Loss: 0.9839 | Val Dice: 0.0520 | Val IoU: 0.0276 | LR: 9.99e-05 | Time: 1m 52s | 
+2026-07-21 10:05:54 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0116 | EX: 0.1457 | SE: 0.0498
+2026-07-21 10:07:46 | [32mINFO    [0m | Trainer | Epoch   9/120 | Train Loss: 0.9899 | Val Loss: 0.9796 | Val Dice: 0.0920 | Val IoU: 0.0515 | LR: 9.98e-05 | Time: 1m 52s | * BEST
+2026-07-21 10:07:46 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0091 | EX: 0.2594 | SE: 0.0987
+2026-07-21 10:09:36 | [32mINFO    [0m | Trainer | Epoch  10/120 | Train Loss: 0.9874 | Val Loss: 0.9790 | Val Dice: 0.0475 | Val IoU: 0.0253 | LR: 9.97e-05 | Time: 1m 50s | 
+2026-07-21 10:09:36 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.1455 | SE: 0.0360
+2026-07-21 10:11:26 | [32mINFO    [0m | Trainer | Epoch  11/120 | Train Loss: 0.9869 | Val Loss: 0.9682 | Val Dice: 0.0761 | Val IoU: 0.0422 | LR: 9.96e-05 | Time: 1m 49s | 
+2026-07-21 10:11:26 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0077 | EX: 0.2351 | SE: 0.0608
+2026-07-21 10:13:15 | [32mINFO    [0m | Trainer | Epoch  12/120 | Train Loss: 0.9832 | Val Loss: 0.9779 | Val Dice: 0.0449 | Val IoU: 0.0236 | LR: 9.94e-05 | Time: 1m 49s | 
+2026-07-21 10:13:15 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0074 | EX: 0.1243 | SE: 0.0471
+2026-07-21 10:18:47 | [32mINFO    [0m | Trainer | Epoch  13/120 | Train Loss: 0.9800 | Val Loss: 0.9520 | Val Dice: 0.1711 | Val IoU: 0.1086 | LR: 9.92e-05 | Time: 5m 31s | * BEST
+2026-07-21 10:18:47 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.0009 | HE: 0.0076 | EX: 0.5015 | SE: 0.1744
+2026-07-21 10:31:24 | [32mINFO    [0m | Trainer | Epoch  14/120 | Train Loss: 0.9745 | Val Loss: 0.9500 | Val Dice: 0.1883 | Val IoU: 0.1099 | LR: 9.89e-05 | Time: 12m 36s | * BEST
+2026-07-21 10:31:24 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.2454 | HE: 0.0265 | EX: 0.3726 | SE: 0.1087
+2026-07-21 10:36:10 | [32mINFO    [0m | Trainer | Epoch  15/120 | Train Loss: 0.9622 | Val Loss: 0.8461 | Val Dice: 0.1850 | Val IoU: 0.1109 | LR: 9.86e-05 | Time: 4m 46s | 
+2026-07-21 10:36:10 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.1301 | HE: 0.0073 | EX: 0.4399 | SE: 0.1625
+2026-07-21 10:41:16 | [32mINFO    [0m | Trainer | Epoch  16/120 | Train Loss: 0.9320 | Val Loss: 0.7790 | Val Dice: 0.2389 | Val IoU: 0.1472 | LR: 9.83e-05 | Time: 5m 5s | * BEST
+2026-07-21 10:41:16 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.2871 | HE: 0.0249 | EX: 0.4935 | SE: 0.1499
+2026-07-21 10:47:10 | [32mINFO    [0m | Trainer | Epoch  17/120 | Train Loss: 0.9203 | Val Loss: 0.7474 | Val Dice: 0.2240 | Val IoU: 0.1411 | LR: 9.79e-05 | Time: 5m 53s | 
+2026-07-21 10:47:10 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.2708 | HE: 0.0157 | EX: 0.5242 | SE: 0.0855
+2026-07-21 10:52:25 | [32mINFO    [0m | Trainer | Epoch  18/120 | Train Loss: 0.9058 | Val Loss: 0.7450 | Val Dice: 0.1998 | Val IoU: 0.1183 | LR: 9.76e-05 | Time: 5m 15s | 
+2026-07-21 10:52:25 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.2713 | HE: 0.0132 | EX: 0.3936 | SE: 0.1210
+2026-07-21 10:54:22 | [32mINFO    [0m | Trainer | Epoch  19/120 | Train Loss: 0.8896 | Val Loss: 0.7249 | Val Dice: 0.2419 | Val IoU: 0.1504 | LR: 9.71e-05 | Time: 1m 56s | * BEST
+2026-07-21 10:54:22 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.2522 | HE: 0.0081 | EX: 0.5155 | SE: 0.1918
+2026-07-21 10:56:30 | [32mINFO    [0m | Trainer | Epoch  20/120 | Train Loss: 0.8845 | Val Loss: 0.7117 | Val Dice: 0.2156 | Val IoU: 0.1308 | LR: 9.67e-05 | Time: 2m 7s | 
+2026-07-21 10:56:30 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3122 | HE: 0.0060 | EX: 0.4322 | SE: 0.1120
+2026-07-21 11:00:15 | [32mINFO    [0m | Trainer | Epoch  21/120 | Train Loss: 0.8829 | Val Loss: 0.6797 | Val Dice: 0.2448 | Val IoU: 0.1508 | LR: 9.62e-05 | Time: 3m 45s | * BEST
+2026-07-21 11:00:15 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3305 | HE: 0.0071 | EX: 0.4721 | SE: 0.1695
+2026-07-21 11:06:01 | [32mINFO    [0m | Trainer | Epoch  22/120 | Train Loss: 0.8734 | Val Loss: 0.6761 | Val Dice: 0.2404 | Val IoU: 0.1476 | LR: 9.57e-05 | Time: 5m 45s | 
+2026-07-21 11:06:01 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3319 | HE: 0.0068 | EX: 0.4622 | SE: 0.1607
+2026-07-21 11:11:04 | [32mINFO    [0m | Trainer | Epoch  23/120 | Train Loss: 0.8791 | Val Loss: 0.6984 | Val Dice: 0.2435 | Val IoU: 0.1535 | LR: 9.51e-05 | Time: 5m 3s | 
+2026-07-21 11:11:04 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3015 | HE: 0.0110 | EX: 0.5303 | SE: 0.1310
+2026-07-21 11:15:52 | [32mINFO    [0m | Trainer | Epoch  24/120 | Train Loss: 0.8732 | Val Loss: 0.6893 | Val Dice: 0.2283 | Val IoU: 0.1384 | LR: 9.46e-05 | Time: 4m 47s | 
+2026-07-21 11:15:52 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3014 | HE: 0.0079 | EX: 0.4434 | SE: 0.1606
+2026-07-21 11:20:34 | [32mINFO    [0m | Trainer | Epoch  25/120 | Train Loss: 0.8735 | Val Loss: 0.7021 | Val Dice: 0.2547 | Val IoU: 0.1584 | LR: 9.39e-05 | Time: 4m 42s | * BEST
+2026-07-21 11:20:34 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.2886 | HE: 0.0079 | EX: 0.5097 | SE: 0.2124
+2026-07-21 11:25:49 | [32mINFO    [0m | Trainer | Epoch  26/120 | Train Loss: 0.8699 | Val Loss: 0.6734 | Val Dice: 0.2614 | Val IoU: 0.1652 | LR: 9.33e-05 | Time: 5m 14s | * BEST
+2026-07-21 11:25:49 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3201 | HE: 0.0100 | EX: 0.5370 | SE: 0.1785
+2026-07-21 11:30:48 | [32mINFO    [0m | Trainer | Epoch  27/120 | Train Loss: 0.8632 | Val Loss: 0.6387 | Val Dice: 0.2769 | Val IoU: 0.1746 | LR: 9.26e-05 | Time: 4m 59s | * BEST
+2026-07-21 11:30:48 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3555 | HE: 0.0122 | EX: 0.5240 | SE: 0.2157
+2026-07-21 11:35:07 | [32mINFO    [0m | Trainer | Epoch  28/120 | Train Loss: 0.8712 | Val Loss: 0.6809 | Val Dice: 0.2618 | Val IoU: 0.1647 | LR: 9.19e-05 | Time: 4m 19s | 
+2026-07-21 11:35:07 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3026 | HE: 0.0078 | EX: 0.5320 | SE: 0.2049
+2026-07-21 11:40:06 | [32mINFO    [0m | Trainer | Epoch  29/120 | Train Loss: 0.8653 | Val Loss: 0.6624 | Val Dice: 0.2703 | Val IoU: 0.1707 | LR: 9.12e-05 | Time: 4m 58s | 
+2026-07-21 11:40:06 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3368 | HE: 0.0097 | EX: 0.5324 | SE: 0.2021
+2026-07-21 11:45:59 | [32mINFO    [0m | Trainer | Epoch  30/120 | Train Loss: 0.8660 | Val Loss: 0.6632 | Val Dice: 0.2655 | Val IoU: 0.1675 | LR: 9.05e-05 | Time: 5m 52s | 
+2026-07-21 11:45:59 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3331 | HE: 0.0079 | EX: 0.5302 | SE: 0.1909
+2026-07-21 11:50:45 | [32mINFO    [0m | Trainer | Epoch  31/120 | Train Loss: 0.8682 | Val Loss: 0.6731 | Val Dice: 0.2649 | Val IoU: 0.1675 | LR: 8.97e-05 | Time: 4m 46s | 
+2026-07-21 11:50:45 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3184 | HE: 0.0078 | EX: 0.5400 | SE: 0.1932
+2026-07-21 11:55:38 | [32mINFO    [0m | Trainer | Epoch  32/120 | Train Loss: 0.8667 | Val Loss: 0.6480 | Val Dice: 0.2755 | Val IoU: 0.1743 | LR: 8.89e-05 | Time: 4m 53s | 
+2026-07-21 11:55:38 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3443 | HE: 0.0079 | EX: 0.5340 | SE: 0.2160
+2026-07-21 12:00:18 | [32mINFO    [0m | Trainer | Epoch  33/120 | Train Loss: 0.8636 | Val Loss: 0.6389 | Val Dice: 0.2649 | Val IoU: 0.1693 | LR: 8.80e-05 | Time: 4m 39s | 
+2026-07-21 12:00:18 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3482 | HE: 0.0079 | EX: 0.5499 | SE: 0.1535
+2026-07-21 12:04:20 | [32mINFO    [0m | Trainer | Epoch  34/120 | Train Loss: 0.8561 | Val Loss: 0.6457 | Val Dice: 0.2552 | Val IoU: 0.1604 | LR: 8.72e-05 | Time: 4m 2s | 
+2026-07-21 12:04:20 | [32mINFO    [0m | Trainer |   Per-class Dice: MA: 0.3402 | HE: 0.0076 | EX: 0.5167 | SE: 0.1561
