@@ -106,7 +106,7 @@ def main():
     use_amp = config.get("classification_training", {}).get("use_amp", True) and device.type == "cuda"
     
     print("Running evaluation on test set...")
-    test_loss, test_preds, test_labels = validate_epoch(
+    test_loss, test_preds, test_labels, test_probs = validate_epoch(
         classifier=classifier,
         seg_model=seg_model,
         loader=test_loader,

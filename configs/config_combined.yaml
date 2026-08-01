@@ -185,6 +185,6 @@ classification_training:
   scheduler_factor:   0.5
   min_lr:            1.0e-7
   early_stopping_patience: 10
-  monitor_metric:    "val_qwk"
+  monitor_metric:    "val_macro_recall"
   use_amp:           true
   checkpoint_dir:    "checkpoints_classifier"

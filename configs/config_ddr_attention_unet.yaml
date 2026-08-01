@@ -1,0 +1,122 @@
+dataset:
+  name: "ddr"
+  root: "C:/Dissertation/Datasets/DDR_final/DDR-dataset/lesion_segmentation"
+  train_images: "train/image"
+  test_images:  "test/image"
+  train_masks:  "train/label"
+  test_masks:   "test/label"
+  use_official_test: true
+
+  lesion_classes:
+    MA: "MA"
+    HE: "HE"
+    EX: "EX"
+    SE: "SE"
+
+  class_names: ["MA", "HE", "EX", "SE"]
+
+  mask_suffixes:
+    MA: ""
+    HE: ""
+    EX: ""
+    SE: ""
+
+  image_ext: ".jpg"
+  mask_ext:  ".tif"
+
+split:
+  train_ratio: 0.85
+  val_ratio:   0.15
+  test_ratio:  0.0  # test is official
+  random_seed: 42
+  split_file:  "outputs/split_metadata_ddr_attention_unet.json"
+
+preprocessing:
+  image_size: 512
+  normalize_mean: [0.485, 0.456, 0.406]
+  normalize_std:  [0.229, 0.224, 0.225]
+
+  apply_clahe:         true
+  clahe_clip_limit:    2.0
+  clahe_tile_grid:     [8, 8]
+
+  apply_bg_crop:       true
+  apply_green_enhance: true
+  apply_illum_correct: true
+  apply_denoise:       false
+  denoise_kernel:      3
+
+augmentation:
+  enabled: true
+  p_hflip:          0.5
+  p_vflip:          0.5
+  p_rotate:         0.5
+  rotate_limit:     90
+  p_brightness:     0.4
+  brightness_limit: 0.2
+  contrast_limit:   0.2
+  p_elastic:        0.2
+  elastic_alpha:    120
+  elastic_sigma:    6
+  p_grid:           0.2
+  p_gamma:          0.3
+  gamma_limit:      [80, 120]
+  p_gauss_noise:    0.2
+  p_sharpen:        0.3
+  p_hue_sat:        0.2
+  p_coarse_dropout: 0.2
+
+model:
+  name:          "AttentionUNet"
+  encoder_name:  "resnet34"
+  encoder_weights: "imagenet"
+  in_channels:   3
+  out_channels:  4
+  base_features: 32
+  encoder_depth: 4
+  dropout_rate:  0.2
+  use_attention: true
+  bilinear:      false
+
+loss:
+  name:          "focal_tversky"
+  alpha:         0.3   # Recall-prioritized weight (FP penalty = 0.3)
+  beta:          0.7   # Recall-prioritized weight (FN penalty = 0.7)
+  gamma:         1.33  # Focal parameter
+  class_weights: [4.0, 1.5, 1.5, 2.5]  # Boost MA weight
+
+training:
+  epochs:            40
+  batch_size:        4
+  num_workers:       2
+  pin_memory:        true
+  random_seed:       42
+
+  optimizer:         "adamw"
+  learning_rate:     3.0e-4
+  weight_decay:      1.0e-4
+  grad_clip:         1.0
+
+  scheduler:         "cosine_warm"
+  warmup_epochs:     3
+  min_lr:            1.0e-6
+
+evaluation:
+  threshold:
+    MA: 0.10
+    HE: 0.20
+    EX: 0.15
+    SE: 0.25
+  min_area:
+    MA: 0
+    HE: 2
+    EX: 1
+    SE: 5
+  use_tta: false
+
+experiment:
+  output_root:       "experiments"
+  name:              "exp_ddr_attention_unet"
+  save_dir:          "experiments"
+  save_best_only:    true
+  log_interval:      10

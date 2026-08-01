@@ -233,7 +233,7 @@ def validate_epoch(
     use_amp: bool,
     device: torch.device,
     limit_batches: Optional[int] = None,
-) -> Tuple[float, List[int], List[int]]:
+) -> Tuple[float, List[int], List[int], List[List[float]]]:
     classifier.eval()
     if seg_model is not None:
         seg_model.eval()
@@ -241,6 +241,7 @@ def validate_epoch(
     total_samples = 0
     all_preds = []
     all_labels = []
+    all_probs = []
     device_type = "cuda" if device.type == "cuda" else "cpu"
     for batch_idx, (images, labels, meta) in enumerate(loader):
         if limit_batches is not None and batch_idx >= limit_batches:
@@ -268,23 +269,31 @@ def validate_epoch(
             loss = criterion(logits, labels)
         running_loss += loss.item() * images.size(0)
         total_samples += images.size(0)
+        probs = torch.softmax(logits, dim=1).cpu().numpy().tolist()
         preds = torch.argmax(logits, dim=1).cpu().numpy().tolist()
         all_preds.extend(preds)
         all_labels.extend(labels.cpu().numpy().tolist())
+        all_probs.extend(probs)
     epoch_loss = running_loss / max(total_samples, 1)
-    return epoch_loss, all_preds, all_labels
+    return epoch_loss, all_preds, all_labels, all_probs
 
 
-def compute_metrics(all_preds: np.ndarray, all_labels: np.ndarray) -> Tuple[float, float, float]:
+from sklearn.metrics import recall_score
+
+def compute_metrics(all_preds: np.ndarray, all_labels: np.ndarray) -> Tuple[float, float, float, float]:
     if len(all_preds) == 0:
-        return 0.0, 0.0, 0.0
-    qwk = cohen_kappa_score(all_labels, all_preds, weights="quadratic")
-    # Cohen's kappa can be NaN or negative if all predictions are identical or data is skewed
+        return 0.0, 0.0, 0.0, 0.0
+    labels_np = np.array(all_labels)
+    preds_np = np.array(all_preds)
+    
+    qwk = cohen_kappa_score(labels_np, preds_np, weights="quadratic")
     if np.isnan(qwk):
         qwk = 0.0
-    acc = accuracy_score(all_labels, all_preds)
-    f1 = f1_score(all_labels, all_preds, average="macro", zero_division=0)
-    return float(qwk), float(acc), float(f1)
+    acc = accuracy_score(labels_np, preds_np)
+    f1 = f1_score(labels_np, preds_np, average="macro", zero_division=0)
+    recall = recall_score(labels_np, preds_np, average="macro", zero_division=0)
+    
+    return float(qwk), float(acc), float(f1), float(recall)
 
 
 def main():
@@ -442,14 +451,8 @@ def main():
     else:
         optimizer = torch.optim.Adam(classifier.parameters(), lr=lr, weight_decay=wd)
         
-    # Calculate class weights for Weighted Cross-Entropy Loss
-    num_classes = len(class_counts)
-    total_samples = len(train_labels)
-    class_weights = total_samples / (num_classes * (class_counts + 1e-6))
-    class_weights = class_weights / class_weights.sum() * num_classes
-    class_weights_tensor = torch.tensor(class_weights, dtype=torch.float32).to(device)
-    logger.info(f"  Weighted Cross-Entropy Loss class weights: {class_weights.tolist()}")
-    criterion = nn.CrossEntropyLoss(weight=class_weights_tensor)
+    # Remove Weighted Cross-Entropy to prevent double-weighting (since we use WeightedRandomSampler)
+    criterion = nn.CrossEntropyLoss()
     
     scheduler_name = tc.get("scheduler", "plateau").lower()
     if scheduler_name == "plateau":
@@ -474,19 +477,20 @@ def main():
     
     # CSV Log initialization
     csv_log_path = log_dir / "classification_metrics.csv"
-    csv_headers = ["epoch", "train_loss", "train_acc", "train_qwk", "train_f1", 
-                   "val_loss", "val_acc", "val_qwk", "val_f1", "lr"]
+    csv_headers = ["epoch", "train_loss", "train_acc", "train_qwk", "train_f1", "train_recall",
+                   "val_loss", "val_acc", "val_qwk", "val_f1", "val_recall", "lr"]
     with open(csv_log_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(csv_headers)
         
     # Metrics tracking
     history = {
-        "epoch": [], "train_loss": [], "train_qwk": [], "train_acc": [],
-        "val_loss": [], "val_qwk": [], "val_acc": [], "val_f1": [], "lr": []
+        "epoch": [], "train_loss": [], "train_qwk": [], "train_acc": [], "train_recall": [],
+        "val_loss": [], "val_qwk": [], "val_acc": [], "val_f1": [], "val_recall": [], "lr": []
     }
     
-    best_qwk = -1.0
+    monitor_metric = tc.get("monitor_metric", "val_qwk")
+    best_metric = -1.0
     best_epoch = 0
     epochs_no_improve = 0
     patience = tc.get("early_stopping_patience", 10)
@@ -516,7 +520,7 @@ def main():
         )
         
         # Validate
-        val_loss, val_preds, val_labels = validate_epoch(
+        val_loss, val_preds, val_labels, _ = validate_epoch(
             classifier=classifier,
             seg_model=seg_model,
             loader=loaders["val"],
@@ -531,15 +535,15 @@ def main():
         )
         
         # Calculate Epoch Metrics
-        train_qwk, train_acc, train_f1 = compute_metrics(np.array(train_preds), np.array(train_labels))
-        val_qwk, val_acc, val_f1 = compute_metrics(np.array(val_preds), np.array(val_labels))
+        train_qwk, train_acc, train_f1, train_recall = compute_metrics(np.array(train_preds), np.array(train_labels))
+        val_qwk, val_acc, val_f1, val_recall = compute_metrics(np.array(val_preds), np.array(val_labels))
         
         current_lr = optimizer.param_groups[0]["lr"]
         
         # Update Scheduler
         if scheduler is not None:
             if isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
-                scheduler.step(val_qwk)
+                scheduler.step(val_recall if monitor_metric == "val_macro_recall" else val_qwk)
             else:
                 scheduler.step()
                 
@@ -548,29 +552,33 @@ def main():
         history["train_loss"].append(train_loss)
         history["train_qwk"].append(train_qwk)
         history["train_acc"].append(train_acc)
+        history["train_recall"].append(train_recall)
         history["val_loss"].append(val_loss)
         history["val_qwk"].append(val_qwk)
         history["val_acc"].append(val_acc)
         history["val_f1"].append(val_f1)
+        history["val_recall"].append(val_recall)
         history["lr"].append(current_lr)
         
         # Write to CSV log
         with open(csv_log_path, "a", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow([
-                epoch, f"{train_loss:.6f}", f"{train_acc:.4f}", f"{train_qwk:.4f}", f"{train_f1:.4f}",
-                f"{val_loss:.6f}", f"{val_acc:.4f}", f"{val_qwk:.4f}", f"{val_f1:.4f}", f"{current_lr:.8f}"
+                epoch, f"{train_loss:.6f}", f"{train_acc:.4f}", f"{train_qwk:.4f}", f"{train_f1:.4f}", f"{train_recall:.4f}",
+                f"{val_loss:.6f}", f"{val_acc:.4f}", f"{val_qwk:.4f}", f"{val_f1:.4f}", f"{val_recall:.4f}", f"{current_lr:.8f}"
             ])
             
         # Logging output
         elapsed = time.time() - epoch_start
-        is_best = val_qwk > best_qwk
+        current_metric = val_recall if monitor_metric == "val_macro_recall" else val_qwk
+        is_best = current_metric > best_metric
         
         logger.info(
             f"Epoch {epoch:>2d}/{tc['epochs']} | "
             f"Loss: {train_loss:.4f} / {val_loss:.4f} | "
             f"Acc: {train_acc:.4f} / {val_acc:.4f} | "
             f"QWK: {train_qwk:.4f} / {val_qwk:.4f} | "
+            f"Recall: {train_recall:.4f} / {val_recall:.4f} | "
             f"LR: {current_lr:.2e} | "
             f"Time: {format_time(elapsed)} | "
             f"{'* BEST' if is_best else ''}"
@@ -578,7 +586,7 @@ def main():
         
         # Checkpointing
         if is_best:
-            best_qwk = val_qwk
+            best_metric = current_metric
             best_epoch = epoch
             epochs_no_improve = 0
             
@@ -588,7 +596,7 @@ def main():
                 "model_state_dict": classifier.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
                 "scheduler_state_dict": scheduler.state_dict() if scheduler else None,
-                "best_qwk": best_qwk,
+                "best_metric": best_metric,
                 "config": config,
             }
             torch.save(state, ckpt_dir / "best.pth")
@@ -601,7 +609,7 @@ def main():
             "model_state_dict": classifier.state_dict(),
             "optimizer_state_dict": optimizer.state_dict(),
             "scheduler_state_dict": scheduler.state_dict() if scheduler else None,
-            "current_qwk": val_qwk,
+            "current_metric": current_metric,
             "config": config,
         }
         torch.save(latest_state, ckpt_dir / "latest.pth")
@@ -610,14 +618,14 @@ def main():
         if epochs_no_improve >= patience:
             logger.warning(
                 f"Early stopping triggered at epoch {epoch}. "
-                f"Best QWK: {best_qwk:.4f} at epoch {best_epoch}."
+                f"Best {monitor_metric}: {best_metric:.4f} at epoch {best_epoch}."
             )
             break
             
     total_time = time.time() - total_start
     logger.info("=" * 60)
     logger.info(f"  Training completed in {format_time(total_time)}")
-    logger.info(f"  Best Val QWK: {best_qwk:.4f} (epoch {best_epoch})")
+    logger.info(f"  Best Val {monitor_metric}: {best_metric:.4f} (epoch {best_epoch})")
     logger.info("=" * 60)
     
     # Save training history
@@ -638,7 +646,41 @@ def main():
         classifier.load_state_dict(best_ckpt["model_state_dict"])
         logger.info(f"Loaded best classifier model from epoch {best_ckpt['epoch']}")
         
-    test_loss, test_preds, test_labels = validate_epoch(
+    logger.info("Extracting validation probabilities for threshold tuning...")
+    _, _, val_labels, val_probs = validate_epoch(
+        classifier=classifier,
+        seg_model=seg_model,
+        loader=loaders["val"],
+        criterion=criterion,
+        variant=args.variant,
+        class_names=class_names,
+        thresholds=thresholds,
+        min_areas=min_areas,
+        use_amp=use_amp,
+        device=device,
+        limit_batches=args.limit_batches,
+    )
+    
+    logger.info("Tuning thresholds to maximize macro recall on validation set...")
+    import scipy.optimize
+    def objective(multipliers, probs, labels):
+        adjusted_probs = probs * multipliers
+        preds = np.argmax(adjusted_probs, axis=1)
+        # Minimize negative macro recall
+        return -recall_score(labels, preds, average="macro", zero_division=0)
+        
+    initial_multipliers = np.ones(config["classification_model"].get("num_classes", 5))
+    res = scipy.optimize.minimize(
+        objective, 
+        initial_multipliers, 
+        args=(np.array(val_probs), np.array(val_labels)), 
+        method='Nelder-Mead',
+        options={'maxiter': 500}
+    )
+    best_multipliers = res.x
+    logger.info(f"Optimal probability multipliers: {best_multipliers.tolist()}")
+        
+    test_loss, _, test_labels, test_probs = validate_epoch(
         classifier=classifier,
         seg_model=seg_model,
         loader=loaders["test"],
@@ -652,8 +694,11 @@ def main():
         limit_batches=args.limit_batches,
     )
     
-    test_qwk, test_acc, test_f1 = compute_metrics(np.array(test_preds), np.array(test_labels))
-    from sklearn.metrics import recall_score
+    # Apply tuned thresholds to test probabilities
+    test_adjusted_probs = np.array(test_probs) * best_multipliers
+    test_preds = np.argmax(test_adjusted_probs, axis=1)
+    
+    test_qwk, test_acc, test_f1, _ = compute_metrics(np.array(test_preds), np.array(test_labels))
     test_recall = recall_score(test_labels, test_preds, average="macro", zero_division=0)
     class_recalls = recall_score(test_labels, test_preds, average=None, zero_division=0)
     

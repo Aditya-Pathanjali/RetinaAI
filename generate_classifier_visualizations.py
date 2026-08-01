@@ -93,9 +93,9 @@ def plot_comparison_chart(hybrid_path, baseline_path, save_path):
     plt.close()
 
 def main():
-    config = load_config("configs/config.yaml")
+    config = load_config("experiments/exp_06_cls_hybrid/classification_config.json")
     device = get_device()
-    exp_dir = Path("experiments/exp_04_cls_hybrid")
+    exp_dir = Path("experiments/exp_06_cls_hybrid")
     plots_dir = exp_dir / "plots"
     plots_dir.mkdir(parents=True, exist_ok=True)
     ckpt_path = exp_dir / "checkpoints" / "best.pth"
@@ -148,8 +148,8 @@ def main():
     plot_roc_curves(y_true, y_probs, classes, plots_dir / "roc_curves.png")
     plot_precision_recall_curves(y_true, y_probs, classes, plots_dir / "pr_curves.png")
     plot_comparison_chart(
-        "experiments/exp_04_cls_hybrid/test_results.json",
-        "experiments/exp_04_cls_classifier_only/test_results.json",
+        "experiments/exp_06_cls_hybrid/test_results.json",
+        "experiments/exp_06_cls_classifier_only/test_results.json",
         plots_dir / "performance_comparison.png"
     )
     print("Generating Grad-CAM overlays...")

@@ -86,14 +86,29 @@ class SegmentationMetrics:
             thresh = self.thresholds[c]
             pred_c = (probs[:, c] > thresh).astype(np.uint8)
             
-            # Post-processing: remove small connected components
+            # Post-processing: remove small connected components & filter non-circular vessel noise for MA
             min_a = self.min_area[c]
-            if min_a > 0:
+            cls_name = self.class_names[c]
+            if min_a > 0 or cls_name == "MA":
                 for b in range(batch_size):
-                    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(pred_c[b], connectivity=8)
+                    num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(pred_c[b], connectivity=8)
                     for i in range(1, num_labels): # skip background 0
-                        if stats[i, cv2.CC_STAT_AREA] < min_a:
+                        area = stats[i, cv2.CC_STAT_AREA]
+                        if min_a > 0 and area < min_a:
                             pred_c[b][labels == i] = 0
+                            continue
+                            
+                        if cls_name == "MA" and area > 0:
+                            # Calculate circularity: (4 * pi * area) / (perimeter^2)
+                            component_mask = (labels == i).astype(np.uint8)
+                            contours, _ = cv2.findContours(component_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                            if contours:
+                                perimeter = cv2.arcLength(contours[0], True)
+                                if perimeter > 0:
+                                    circularity = (4.0 * np.pi * area) / (perimeter ** 2)
+                                    # Discard linear/vessel artifacts (low circularity)
+                                    if circularity < 0.25:
+                                        pred_c[b][labels == i] = 0
 
             for b in range(batch_size):
                 if valid_classes_np is not None and valid_classes_np[b, c] == 0:

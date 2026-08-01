@@ -207,7 +207,37 @@ class FocalTverskyLoss(nn.Module):
             valid_count = valid_classes.sum(dim=1).clamp(min=1.0)
             return (loss.sum(dim=1) / valid_count).mean()
 
-        return loss.mean()
+class BoundaryFocalTverskyLoss(nn.Module):
+    """
+    Combines Focal Tversky Loss with spatial Laplacian boundary penalty
+    to refine microaneurysm and small lesion edges.
+    """
+    def __init__(
+        self,
+        alpha: float = 0.3,
+        beta: float = 0.7,
+        gamma: float = 1.33,
+        boundary_weight: float = 0.3,
+        smooth: float = 1.0,
+        class_weights: Optional[List[float]] = None,
+    ):
+        super().__init__()
+        self.ft = FocalTverskyLoss(alpha=alpha, beta=beta, gamma=gamma, smooth=smooth, class_weights=class_weights)
+        self.boundary_weight = boundary_weight
+
+    def forward(self, logits: torch.Tensor, targets: torch.Tensor, valid_classes: Optional[torch.Tensor] = None) -> torch.Tensor:
+        ft_loss = self.ft(logits, targets, valid_classes)
+        
+        probs = torch.sigmoid(logits)
+        # Compute spatial boundary laplacian
+        kernel = torch.tensor([[[[0., 1., 0.], [1., -4., 1.], [0., 1., 0.]]]], device=logits.device, dtype=logits.dtype)
+        
+        b, c, h, w = probs.shape
+        probs_conv = F.conv2d(probs.view(b * c, 1, h, w), kernel, padding=1).view(b, c, h, w)
+        target_conv = F.conv2d(targets.view(b * c, 1, h, w), kernel, padding=1).view(b, c, h, w)
+        
+        boundary_loss = F.mse_loss(torch.abs(probs_conv), torch.abs(target_conv))
+        return ft_loss + self.boundary_weight * boundary_loss
 
 
 class DiceFocalLoss(nn.Module):
@@ -326,6 +356,15 @@ def get_loss_function(config: Dict[str, Any]) -> nn.Module:
         return TverskyLoss(
             alpha=lc.get("tversky_alpha", 0.7),
             beta=lc.get("tversky_beta", 0.3),
+            class_weights=class_weights,
+        )
+
+    elif name == "boundary_focal_tversky":
+        return BoundaryFocalTverskyLoss(
+            alpha=lc.get("tversky_alpha", 0.3),
+            beta=lc.get("tversky_beta", 0.7),
+            gamma=lc.get("focal_tversky_gamma", 1.33),
+            boundary_weight=lc.get("boundary_weight", 0.3),
             class_weights=class_weights,
         )
 

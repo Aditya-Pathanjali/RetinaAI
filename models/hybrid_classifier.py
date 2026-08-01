@@ -63,7 +63,9 @@ class HybridDRClassifier(nn.Module):
         features = self.backbone(x)
 
         if lesion_counts is not None and self.lesion_feature_dim > 0:
-            merged = torch.cat([features, lesion_counts], dim=1)
+            # Apply log-scaling to raw counts for numerical stability
+            scaled_counts = torch.log1p(lesion_counts)
+            merged = torch.cat([features, scaled_counts], dim=1)
         else:
             merged = features
 
