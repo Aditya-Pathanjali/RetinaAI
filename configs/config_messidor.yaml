@@ -1,0 +1,66 @@
+dataset:
+  name: "messidor"
+  root: "C:/Dissertation/Datasets/MESSIDOR-2"
+  class_names: ["MA", "HE", "EX", "SE"]
+
+messidor_dataset:
+  root: "C:/Dissertation/Datasets/MESSIDOR-2"
+  images_dir: "IMAGES"
+  csv_file: "messidor-2.csv"
+  num_workers: 2
+
+preprocessing:
+  image_size: 512
+  normalize_mean: [0.485, 0.456, 0.406]
+  normalize_std:  [0.229, 0.224, 0.225]
+
+  apply_clahe:         true
+  clahe_clip_limit:    2.0
+  clahe_tile_grid:     [8, 8]
+
+  apply_bg_crop:       true
+  apply_green_enhance: true
+  apply_illum_correct: true
+  apply_denoise:       false
+  denoise_kernel:      3
+
+model:
+  name:          "AttentionUNet"
+  encoder_name:  "resnet34"
+  encoder_weights: "imagenet"
+  in_channels:   3
+  out_channels:  4
+  base_features: 32
+  encoder_depth: 4
+  dropout_rate:  0.2
+  use_attention: true
+  bilinear:      false
+
+classification_model:
+  num_classes: 5
+  lesion_feature_dim: 4
+  pretrained: true
+  dropout_rate: 0.3
+  hidden_dim: 512
+
+evaluation:
+  threshold:
+    MA: 0.15
+    HE: 0.25
+    EX: 0.25
+    SE: 0.20
+  min_area:
+    MA: 1
+    HE: 3
+    EX: 2
+    SE: 2
+  class_calibration_weights: [1.0, 3.5, 1.0, 4.0, 1.0]
+  use_tta: false
+
+checkpoints:
+  seg_checkpoint: "experiments/exp_ddr_attention_unet/checkpoints/best.pth"
+  cls_checkpoint: "experiments/exp_12_cls_hybrid_high_recall/checkpoints/best.pth"
+
+experiment:
+  output_root:       "experiments"
+  name:              "exp_messidor_eval"

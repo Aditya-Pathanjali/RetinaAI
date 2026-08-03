@@ -1,0 +1,187 @@
+{
+    "dataset": {
+        "root": "C:/Dissertation/Datasets/DDR_final/DDR-dataset/lesion_segmentation",
+        "train_images": "train/image",
+        "test_images": "test/image",
+        "train_masks": "train/label",
+        "test_masks": "test/label",
+        "use_official_test": true,
+        "lesion_classes": {
+            "MA": "MA",
+            "HE": "HE",
+            "EX": "EX",
+            "SE": "SE"
+        },
+        "class_names": [
+            "MA",
+            "HE",
+            "EX",
+            "SE"
+        ],
+        "mask_suffixes": {
+            "MA": "",
+            "HE": "",
+            "EX": "",
+            "SE": ""
+        },
+        "image_ext": ".jpg",
+        "mask_ext": ".tif"
+    },
+    "split": {
+        "train_ratio": 0.85,
+        "val_ratio": 0.15,
+        "test_ratio": 0.0,
+        "random_seed": 42,
+        "split_file": "outputs/split_metadata.json"
+    },
+    "preprocessing": {
+        "image_size": 512,
+        "normalize_mean": [
+            0.485,
+            0.456,
+            0.406
+        ],
+        "normalize_std": [
+            0.229,
+            0.224,
+            0.225
+        ],
+        "apply_clahe": true,
+        "clahe_clip_limit": 2.0,
+        "clahe_tile_grid": [
+            8,
+            8
+        ],
+        "apply_bg_crop": true,
+        "apply_green_enhance": true,
+        "apply_illum_correct": true,
+        "apply_denoise": false,
+        "denoise_kernel": 3
+    },
+    "augmentation": {
+        "enabled": true,
+        "p_hflip": 0.5,
+        "p_vflip": 0.5,
+        "p_rotate": 0.5,
+        "rotate_limit": 90,
+        "p_brightness": 0.4,
+        "brightness_limit": 0.2,
+        "contrast_limit": 0.2,
+        "p_elastic": 0.2,
+        "elastic_alpha": 120,
+        "elastic_sigma": 6,
+        "p_grid": 0.2,
+        "p_gamma": 0.3,
+        "gamma_limit": [
+            80,
+            120
+        ],
+        "p_gauss_noise": 0.2,
+        "p_sharpen": 0.3,
+        "p_hue_sat": 0.2,
+        "p_coarse_dropout": 0.2
+    },
+    "model": {
+        "name": "AttentionUNet",
+        "encoder_name": "resnet34",
+        "encoder_weights": "imagenet",
+        "in_channels": 3,
+        "out_channels": 4,
+        "base_features": 32,
+        "encoder_depth": 4,
+        "dropout_rate": 0.2,
+        "use_attention": true,
+        "bilinear": false
+    },
+    "loss": {
+        "name": "dice_focal",
+        "dice_weight": 0.5,
+        "focal_weight": 0.5,
+        "focal_alpha": 0.5,
+        "focal_gamma": 2.0,
+        "class_weights": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    "training": {
+        "epochs": 40,
+        "batch_size": 8,
+        "num_workers": 0,
+        "pin_memory": true,
+        "random_seed": 42,
+        "optimizer": "adamw",
+        "learning_rate": 0.0003,
+        "weight_decay": 0.0001,
+        "grad_clip": 1.0,
+        "scheduler": "cosine_warm",
+        "warmup_epochs": 3,
+        "min_lr": 1e-06
+    },
+    "evaluation": {
+        "threshold": {
+            "MA": 0.1,
+            "HE": 0.2,
+            "EX": 0.15,
+            "SE": 0.25
+        },
+        "min_area": {
+            "MA": 0,
+            "HE": 2,
+            "EX": 1,
+            "SE": 5
+        },
+        "use_tta": false
+    },
+    "experiment": {
+        "output_root": "experiments",
+        "name": "exp_12_cls_hybrid_high_recall",
+        "save_dir": "experiments",
+        "save_best_only": true,
+        "log_interval": 10
+    },
+    "logging": {
+        "level": "INFO",
+        "save_to_file": true,
+        "log_file": "outputs/logs/retinaai.log"
+    },
+    "aptos_dataset": {
+        "root": "C:/Dissertation/Datasets/archive",
+        "train_csv": "train_1.csv",
+        "val_csv": "valid.csv",
+        "test_csv": "test.csv",
+        "train_images": "train_images/train_images",
+        "val_images": "val_images/val_images",
+        "test_images": "test_images/test_images",
+        "image_ext": ".png"
+    },
+    "classification_model": {
+        "num_classes": 5,
+        "lesion_feature_dim": 4,
+        "pretrained": true,
+        "dropout_rate": 0.3,
+        "hidden_dim": 512
+    },
+    "classification_training": {
+        "epochs": 40,
+        "batch_size": 8,
+        "num_workers": 0,
+        "pin_memory": true,
+        "random_seed": 42,
+        "use_weighted_sampler": true,
+        "optimizer": "adamw",
+        "learning_rate": 0.0001,
+        "weight_decay": 0.0001,
+        "grad_clip": 1.0,
+        "scheduler": "plateau",
+        "scheduler_patience": 5,
+        "scheduler_factor": 0.5,
+        "min_lr": 1e-07,
+        "early_stopping_patience": 15,
+        "monitor_metric": "val_macro_recall",
+        "use_amp": true,
+        "checkpoint_dir": "checkpoints_classifier"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "num_evaluated_images": 1748,
+    "class_predictions_distribution": {
+        "Grade_0_Healthy": 1388,
+        "Grade_1_Mild": 85,
+        "Grade_2_Moderate": 235,
+        "Grade_3_Severe": 17,
+        "Grade_4_Proliferative": 23
+    },
+    "mean_detected_lesion_counts": {
+        "MA": 2.1024027459954233,
+        "HE": 2.0005720823798625,
+        "EX": 1.4513729977116705,
+        "SE": 1.431350114416476
+    }
+}

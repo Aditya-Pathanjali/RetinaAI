@@ -147,11 +147,24 @@ def build_aptos_dataloaders(config: Dict[str, Any]) -> Dict[str, DataLoader]:
     num_workers = train_cfg.get("num_workers", 4)
     pin_memory = train_cfg.get("pin_memory", True)
 
+    use_weighted_sampler = train_cfg.get("use_weighted_sampler", False)
+    sampler = None
+    shuffle = True
+    if use_weighted_sampler:
+        from torch.utils.data import WeightedRandomSampler
+        targets = train_dataset.df["diagnosis"].values
+        class_sample_counts = np.bincount(targets)
+        weight = 1.0 / (class_sample_counts + 1e-6)
+        samples_weight = torch.from_numpy(weight[targets]).float()
+        sampler = WeightedRandomSampler(weights=samples_weight, num_samples=len(samples_weight), replacement=True)
+        shuffle = False
+
     loaders = {
         "train": DataLoader(
             train_dataset,
             batch_size=batch_size,
-            shuffle=True,
+            shuffle=shuffle,
+            sampler=sampler,
             num_workers=num_workers,
             pin_memory=pin_memory,
             drop_last=True,
