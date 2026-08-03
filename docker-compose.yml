@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  retinaai-backend:
+    build: .
+    container_name: retinaai-backend-api
+    command: uvicorn backend.app.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  retinaai-frontend:
+    build: .
+    container_name: retinaai-clinical-web
+    command: streamlit run web_app.py --server.port=8501 --server.address=0.0.0.0
+    ports:
+      - "8501:8501"
+    depends_on:
+      - retinaai-backend
+    restart: unless-stopped
