@@ -1,7 +1,3 @@
-"""
-RetinaAI — Utils Package
-Utility functions for logging, helpers, and visualization.
-"""
 from .logger import get_logger
 from .helpers import (
     set_seed,

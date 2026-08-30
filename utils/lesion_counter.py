@@ -5,6 +5,10 @@ import torch
 from typing import Union, Dict, List, Optional
 
 
+#This script contains the main Lesion count logic using ConnectedComponents
+#This is used to count the number of lesions in the segmented masks
+
+
 def count_lesions_single_mask(
     mask: Union[np.ndarray, torch.Tensor],
     min_area: int = 0,

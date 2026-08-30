@@ -45,15 +45,15 @@ classification_model:
 
 evaluation:
   threshold:
-    MA: 0.15
-    HE: 0.25
-    EX: 0.25
-    SE: 0.20
+    MA: 0.30
+    HE: 0.30
+    EX: 0.30
+    SE: 0.30
   min_area:
-    MA: 1
-    HE: 3
-    EX: 2
-    SE: 2
+    MA: 5
+    HE: 5
+    EX: 5
+    SE: 5
   class_calibration_weights: [1.0, 3.5, 1.0, 4.0, 1.0]
   use_tta: false
 

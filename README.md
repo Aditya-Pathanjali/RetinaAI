@@ -1,137 +1,44 @@
-# RetinaAI — Diabetic Retinopathy Analysis & Generalization Framework
+# RetinaAI — Explainable Deep Learning System for Diabetic Retinopathy Screening
 
-A two-stage interpretable deep learning system for **diabetic retinopathy (DR) analysis** combining multi-class lesion segmentation with severity grading classification.
+RetinaAI is an automated and explainable Diabetic Retinopathy (DR) screening system designed to identify retinal lesions, classify disease severity, and provide visual evidence for its predictions. 
 
-> MSc Dissertation Project — University of Leeds, 2025–2026
+The system uses an Attention U-Net with a ResNet-34 encoder for pixel-level segmentation of four key microvascular lesions: microaneurysms, haemorrhages, hard exudates, and soft exudates. This is followed by an EfficientNet-B4 classifier that combines global retinal image features with explicit, quantified lesion count biomarkers for 5-stage ICDR disease severity grading. Gradient-weighted Class Activation Mapping (Grad-CAM) is integrated to provide visual explanations of classification decisions. 
 
----
-
-## Overview
-
-RetinaAI addresses diabetic retinopathy screening through three integrated components:
-
-1. **Lesion Segmentation (Stage 1)** — An **Attention U-Net** with a ResNet34 encoder trained on the **DDR** & **IDRiD** datasets for pixel-level segmentation and instance counting of four key DR biomarkers:
-   - **MA** — Microaneurysms
-   - **HE** — Haemorrhages
-   - **EX** — Hard Exudates
-   - **SE** — Soft Exudates
-
-2. **Severity Classification (Stage 2)** — A **Hybrid DR Classifier** fusing deep convolutional image features with explicit 4D lesion count vectors (`[MA, HE, EX, SE]`), trained on the **APTOS 2019** dataset for 5-grade DR severity classification (Grades 0–4). Includes `WeightedRandomSampler` inverse-frequency mini-batch balancing (`exp_12_cls_hybrid_high_recall`) to maximize high-grade disease sensitivity.
-
-3. **Zero-Shot External Cross-Dataset Validation** — Direct evaluation on the **MESSIDOR-2** dataset ($1,748$ fundus images from French hospitals/Topcon camera sensors) without retraining, assessing real-world clinical transferability across camera hardware.
+The system was developed and evaluated using the IDRiD, APTOS 2019, and MESSIDOR-2 datasets across experiments covering lesion segmentation, severity classification, lesion-count integration, and external zero-shot dataset evaluation. The complete workflow is packaged into an interactive desktop application integrating segmentation, classification, explainability heatmaps, and clinical PDF report generation.
 
 ---
 
-## Benchmark Experimental Results
+## Datasets
 
-### 1. Stage 1 Segmentation Performance
-
-#### IDRiD Test Set (`exp_04`)
-| Lesion Class | Dice Score | IoU | Precision | Recall |
-| :--- | :---: | :---: | :---: | :---: |
-| **Microaneurysms (MA)** | 0.011 | 0.005 | 0.006 | 0.758 |
-| **Haemorrhages (HE)** | 0.460 | 0.299 | 0.375 | 0.594 |
-| **Hard Exudates (EX)** | 0.700 | 0.538 | 0.678 | 0.723 |
-| **Soft Exudates (SE)** | 0.695 | 0.532 | 0.567 | 0.898 |
-| **Mean** | **0.466** | **0.344** | **0.406** | **0.743** |
-
-#### DDR Test Set (`exp_ddr_attention_unet`)
-| Lesion Class | Hard Exudates (EX) Dice | Soft Exudates (SE) Dice | Haemorrhages (HE) Dice | Microaneurysms (MA) Dice |
-| :--- | :---: | :---: | :---: | :---: |
-| **Attention U-Net** | **40.47%** | **37.20%** | **28.15%** | **7.82%** |
+- **[IDRiD (Indian Diabetic Retinopathy Image Dataset)](https://idrid.grand-challenge.org/):** Used for Stage 1 lesion segmentation training and testing ($81$ images with expert pixel-level binary annotations for MA, HE, EX, and SE).
+- **[APTOS 2019 Blindness Detection](https://www.kaggle.com/competitions/aptos2019-blindness-detection):** Used for Stage 2 hybrid classification model development and validation ($3,662$ fundus images graded across 5 clinical severity levels).
+- **[MESSIDOR-2](https://www.adcis.net/en/third-party/messidor2/):** Used for independent, external zero-shot cross-dataset generalization evaluation ($1,748$ images across $874$ patient examinations).
 
 ---
 
-### 2. Stage 2 Classification Performance (APTOS 2019 Test Set)
-
-| Model Experiment | Overall Accuracy | QWK (Kappa) | Macro F1 | Referable DR Recall | Severe DR (Grade 3) Recall |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Baseline Classifier Only (`exp_04`)** | 79.5% | 0.865 | 60.1% | 81.2% | 31.5% |
-| **Standard Hybrid Model (`exp_06`)** | 81.1% | 0.883 | 62.7% | 84.1% | 35.3% |
-| **High-Recall Hybrid (`exp_12`) ⭐ BEST** | **81.69%** | **0.8800** | **64.48%** | **85.4%** | **47.06%** *(+11.8% gain)* |
-
----
-
-### 3. Zero-Shot Cross-Dataset Validation (MESSIDOR-2 — $1,748$ Unseen Images)
-
-| Clinical DR Grade | Ground Truth Distribution | Calibrated Zero-Shot Model Predictions | Alignment |
-| :--- | :---: | :---: | :---: |
-| **Grade 0 (Healthy / No DR)** | 1,017 (58.2%) | 1,388 (79.4%) | High Specificity |
-| **Grade 1 (Mild DR)** | 270 (15.4%) | 85 (4.9%) | Active Detection |
-| **Grade 2 (Moderate DR)** | 347 (19.9%) | 235 (13.4%) | Close Match ($\Delta = 54$) |
-| **Grade 3 (Severe DR)** | 75 (4.3%) | 17 (1.0%) | Active Detection |
-| **Grade 4 (Proliferative DR)** | 39 (2.2%) | 23 (1.3%) | Close Match ($\Delta = 13$) |
-| **TOTAL** | **1,748 images** | **1,748 images** | **All 5 Active** |
-
----
-
-## Project Structure
-
-```
-RetinaAI/
-├── main.py                              # Main training and evaluation pipeline driver
-├── train_ddr_attention_unet.py          # DDR Attention U-Net training pipeline
-├── train_classifier.py                  # Hybrid DR classifier training script
-├── evaluate_classifier.py               # APTOS classifier evaluation script
-├── evaluate_messidor.py                 # MESSIDOR-2 zero-shot cross-dataset evaluation
-├── app.py                               # Desktop GUI interface (Tkinter)
-├── inference.py                         # Single-image inference CLI tool
-├── generate_visualizations.py           # Segmentation overlays & mask visualizer
-├── generate_classifier_visualizations.py # Confusion matrix, ROC & Grad-CAM visualizer
-├── requirements.txt                     # Core dependencies
-├── wsl_setup.sh                         # WSL/Linux GPU environment setup script
-│
-├── configs/
-│   ├── config.yaml                      # Base configuration
-│   ├── config_ddr_attention_unet.yaml   # DDR Attention U-Net configuration
-│   ├── config_cls_high_recall.yaml      # High-recall class-weighted classifier config
-│   └── config_messidor.yaml             # MESSIDOR-2 evaluation config
-│
-├── models/
-│   ├── attention_unet.py                # Attention U-Net architecture (ResNet34 backbone)
-│   ├── hybrid_classifier.py             # Hybrid classifier fusing CNN + 4D lesion counts
-│   └── losses.py                        # Combined Dice + Focal loss functions
-│
-├── datasets/
-│   ├── idrid_dataset.py                 # IDRiD segmentation dataset loader
-│   ├── aptos_dataset.py                # APTOS 2019 dataset loader with WeightedSampler
-│   └── messidor_dataset.py             # MESSIDOR-2 dataset loader
-│
-├── preprocessing/
-│   ├── enhancer.py                      # Retinal image processing (CLAHE green channel)
-│   ├── transforms.py                    # Albumentations medical augmentation pipelines
-│   └── patch_extractor.py               # High-resolution patch extraction
-│
-└── experiments/                         # Experiment outputs and checkpoints
-    ├── exp_ddr_attention_unet/          # Trained Attention U-Net checkpoint
-    ├── exp_06_cls_hybrid/               # Standard hybrid classifier baseline
-    ├── exp_12_cls_hybrid_high_recall/   # High-recall hybrid classifier (Best model)
-    └── exp_messidor_eval/               # MESSIDOR-2 zero-shot evaluation results
-```
-
----
-
-## Setup & Installation
+## Installation & Setup
 
 ### Prerequisites
+- Python 3.10 or higher
+- NVIDIA GPU with CUDA support (recommended) or CPU
 
-- Python 3.10+
-- CUDA 12.1+ capable GPU (recommended) or CPU
-
-### Installation
-
+### 1. Clone Repository & Create Environment
 ```bash
-# Clone repository
 git clone https://github.com/Aditya-Pathanjali/RetinaAI.git
 cd RetinaAI
 
-# Create virtual environment
+# Create and activate virtual environment
 python -m venv venv
-source venv/bin/activate        # Linux/macOS
-# venv\Scripts\activate         # Windows
+venv\Scripts\activate       # Windows
+# source venv/bin/activate  # Linux / macOS
+```
 
-# Install Dependencies
+### 2. Install Dependencies
+```bash
+# Install PyTorch with CUDA support
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+
+# Install project requirements
 pip install -r requirements.txt
 ```
 
@@ -139,38 +46,53 @@ pip install -r requirements.txt
 
 ## Execution Guide
 
-### 1. Train Attention U-Net on DDR
+### 1. Launch Desktop Application
 ```bash
-python train_ddr_attention_unet.py --config configs/config_ddr_attention_unet.yaml
+python desktop_app.py
 ```
 
-### 2. Train High-Recall Hybrid DR Classifier
+### 2. Stage 1: Train & Evaluate Lesion Segmentation
 ```bash
+# Train Attention U-Net on IDRiD
+python main.py --mode train --config configs/config.yaml
+
+# Evaluate segmentation metrics (Dice, IoU, Recall) on IDRiD test set
+python main.py --mode eval --config configs/config.yaml
+```
+
+### 3. Stage 2: Train & Evaluate Hybrid DR Classifier
+```bash
+# Train the high-recall hybrid classification model on APTOS 2019
 python train_classifier.py --config configs/config_cls_high_recall.yaml --variant hybrid
-```
 
-### 3. Evaluate Classifier on APTOS 2019 Test Set
-```bash
+# Evaluate classification performance (Accuracy, QWK, Macro-F1, Sensitivity)
 python evaluate_classifier.py --config configs/config_cls_high_recall.yaml --variant hybrid
 ```
 
-### 4. Run MESSIDOR-2 Zero-Shot Cross-Dataset Validation
+### 4. Zero-Shot Cross-Dataset Validation (MESSIDOR-2)
 ```bash
+# Run external validation across all 1,748 unseen MESSIDOR-2 images
 python evaluate_messidor.py --config configs/config_messidor.yaml
+```
+
+### 5. Generate Diagnostic Visualizations
+```bash
+# Generate ROC curves, confusion matrices, and Grad-CAM figure plots
+python visualization_classifier.py
 ```
 
 ---
 
-## Technologies & Frameworks
+## Technologies Used
 
-- **PyTorch** — Deep learning framework
-- **Segmentation Models PyTorch** — ResNet encoder backbones
-- **Albumentations** — Medical-grade augmentations
-- **OpenCV** — Retinal CLAHE enhancement
-- **scikit-learn** — QWK (Kappa), ROC, and classification metrics
+- **Deep Learning Framework:** PyTorch, torchvision, segmentation-models-pytorch
+- **Image Processing & Augmentation:** OpenCV, Albumentations
+- **Graphical User Interface:** PyQt6
+- **Diagnostic Report Generation:** ReportLab
+- **Evaluation & Visualisation:** Scikit-learn, NumPy, Pandas, Matplotlib, Seaborn
 
 ---
 
-## License
+## Academic Context
 
 Developed as part of an MSc Dissertation project at the University of Leeds (2025–2026).

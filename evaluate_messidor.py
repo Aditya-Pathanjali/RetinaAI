@@ -128,6 +128,21 @@ def evaluate_messidor_pipeline(
     # Compute predicted class distribution
     class_pred_counts = np.bincount(all_preds, minlength=5).tolist()
 
+    # Compute lesion breakdown per predicted DR grade
+    lesions_per_predicted_grade = {}
+    grade_names = ["Grade_0_Healthy", "Grade_1_Mild", "Grade_2_Moderate", "Grade_3_Severe", "Grade_4_Proliferative"]
+    for g_idx, g_name in enumerate(grade_names):
+        mask = (all_preds == g_idx)
+        if np.sum(mask) > 0:
+            lesions_per_predicted_grade[g_name] = {
+                "MA": float(np.mean(all_lesion_counts[mask, 0])),
+                "HE": float(np.mean(all_lesion_counts[mask, 1])),
+                "EX": float(np.mean(all_lesion_counts[mask, 2])),
+                "SE": float(np.mean(all_lesion_counts[mask, 3])),
+            }
+        else:
+            lesions_per_predicted_grade[g_name] = {"MA": 0.0, "HE": 0.0, "EX": 0.0, "SE": 0.0}
+
     results = {
         "num_evaluated_images": len(all_preds),
         "class_predictions_distribution": {
@@ -143,6 +158,7 @@ def evaluate_messidor_pipeline(
             "EX": float(np.mean(all_lesion_counts[:, 2])),
             "SE": float(np.mean(all_lesion_counts[:, 3])),
         },
+        "lesions_per_predicted_grade": lesions_per_predicted_grade,
     }
 
     # If ground truth labels exist in CSV metadata
