@@ -206,6 +206,8 @@ class FocalTverskyLoss(nn.Module):
             loss = loss * valid_classes
             valid_count = valid_classes.sum(dim=1).clamp(min=1.0)
             return (loss.sum(dim=1) / valid_count).mean()
+        else:
+            return loss.mean()
 
 class BoundaryFocalTverskyLoss(nn.Module):
     """

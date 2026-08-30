@@ -1,5 +1,5 @@
 
-
+# This script contains the logic for logging used throughout the project
 import logging
 import sys
 from pathlib import Path

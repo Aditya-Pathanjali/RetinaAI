@@ -6,6 +6,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
+pytest.ini
 
 # ── Virtual environments ─────────────────────────────────────────────────────
 retina_env/
@@ -25,26 +27,60 @@ env/
 build/
 dist/
 *.spec
+build_exe.py
 
-# ── One-time / derived scripts ───────────────────────────────────────────────
-patch_model.py
-wsl_requirements.txt
+# ── Local Experiments & Data Outputs ─────────────────────────────────────────
+experiments/
+outputs/
+outputs/logs/
+best pick/
+scratch/
+notebooks/
+tests/
+*.pdf
+*.png
+*.jpg
+*.csv
+*.json
 
-# ── IDE / editor ─────────────────────────────────────────────────────────────
+# ── Secondary / Experimental Scripts (preserved locally) ────────────────────
+/train_binary_lesion.py
+/train_cascade.py
+/train_ddr_attention_unet.py
+/tune_all_postprocessing.py
+/tune_binary_postprocessing.py
+/tune_postprocessing.py
+/make_matrix.py
+/collect_best_picks.py
+/patch_model.py
+/wsl_requirements.txt
+/wsl_setup.sh
+/web_app.py
+/train.py
+/evaluate.py
+/app.py
+/generate_visualizations.py
+/inference.py
+/Dockerfile
+/docker-compose.yml
+
+# ── Secondary Configs (preserved locally) ────────────────────────────────────
+configs/config_combined.yaml
+configs/config_ddr.yaml
+configs/config_ddr_attention_unet.yaml
+configs/config_eophtha_combined.yaml
+configs/config_focal.yaml
+configs/config_multiclass_patch_hybrid.yaml
+configs/binary_*.yaml
+
+# ── IDE / OS ─────────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# ── OS files ─────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 desktop.ini
+.env
 
-# ── Jupyter / IPython ────────────────────────────────────────────────────────
-.ipynb_checkpoints/
-*.ipynb
-
-# ── Runtime logs (not experiment logs) ───────────────────────────────────────
-outputs/logs/

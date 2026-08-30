@@ -1,4 +1,8 @@
 
+
+#This is the main script for the project
+#This script is used to train, evaluate, and explore the model on the dataset
+
 import argparse
 import sys
 import os
@@ -439,11 +443,6 @@ def _build_scheduler(optimizer, train_config: dict):
 
 
 class WarmupScheduler:
-    """Linear warmup wrapper for any base scheduler.
-    
-    Ramps LR linearly from warmup_start_lr to the optimizer's initial LR
-    over warmup_epochs, then delegates to the base scheduler.
-    """
     def __init__(self, optimizer, base_scheduler, warmup_epochs, warmup_start_lr=1e-6):
         self.optimizer = optimizer
         self.base_scheduler = base_scheduler

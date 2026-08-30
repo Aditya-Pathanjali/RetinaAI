@@ -1,3 +1,6 @@
+
+#This is the Main application that contains the GUI, this uses PyQt6 to display the application
+
 import sys
 import os
 import io
@@ -12,6 +15,7 @@ from pathlib import Path
 from typing import Dict, Any, Optional, List, Tuple
 
 # Add project root to sys.path
+
 PROJECT_ROOT = Path(__file__).resolve().parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
@@ -45,11 +49,15 @@ from PyQt6.QtWidgets import (
     QScrollArea,
     QSizePolicy,
     QDialog,
+    QLineEdit,
+    QComboBox,
+    QGraphicsView,
+    QGraphicsScene,
+    QGraphicsPixmapItem,
 )
 
 from backend.app.inference import RetinaAIInferenceEngine
 from utils.pdf_generator import generate_clinical_pdf_report
-
 
 class HistoryManager:
     def __init__(self, storage_dir: Path):
@@ -409,7 +417,6 @@ class RetinaAISplashScreen(QWidget):
         self.status_lbl.setText(msg)
 
 
-# --- Background Async Inference Worker Thread ---
 class InferenceWorker(QThread):
     finished = pyqtSignal(dict)
     error = pyqtSignal(str)
@@ -430,17 +437,78 @@ class InferenceWorker(QThread):
             self.error.emit(str(e))
 
 
-# --- Custom Clickable Label for Canvas Placeholder ---
-class ClickableLabel(QLabel):
+class InteractiveFundusView(QGraphicsView):
     clicked = pyqtSignal()
+    image_dropped = pyqtSignal(str)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.scene = QGraphicsScene(self)
+        self.setScene(self.scene)
+        self.pixmap_item = QGraphicsPixmapItem()
+        self.scene.addItem(self.pixmap_item)
+
+        self.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
+        self.setRenderHint(QPainter.RenderHint.Antialiasing)
+        self.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.FullViewportUpdate)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.setStyleSheet("border: none; background: transparent;")
+        self.setAcceptDrops(True)
+        self._is_empty = True
+
+    def set_pixmap(self, pixmap: QPixmap, is_placeholder: bool = False):
+        self.pixmap_item.setPixmap(pixmap)
+        self.scene.setSceneRect(QRectF(pixmap.rect()))
+        self._is_empty = is_placeholder
+        self.resetTransform()
+        self.fitInView(self.scene.sceneRect(), Qt.AspectRatioMode.KeepAspectRatio)
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
+        if self._is_empty and event.button() == Qt.MouseButton.LeftButton:
             self.clicked.emit()
         super().mousePressEvent(event)
 
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            for url in event.mimeData().urls():
+                if url.toLocalFile().lower().endswith(('.png', '.jpg', '.jpeg', '.tif', '.tiff')):
+                    event.acceptProposedAction()
+                    return
+        super().dragEnterEvent(event)
 
-# --- Custom Radial / Circular Confidence Gauge Widget ---
+    def dragMoveEvent(self, event):
+        event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        if event.mimeData().hasUrls():
+            for url in event.mimeData().urls():
+                file_path = url.toLocalFile()
+                if file_path.lower().endswith(('.png', '.jpg', '.jpeg', '.tif', '.tiff')):
+                    self.image_dropped.emit(file_path)
+                    event.acceptProposedAction()
+                    return
+        super().dropEvent(event)
+
+    def wheelEvent(self, event):
+        if not self._is_empty:
+            zoom_factor = 1.15 if event.angleDelta().y() > 0 else 1.0 / 1.15
+            self.scale(zoom_factor, zoom_factor)
+        else:
+            super().wheelEvent(event)
+
+    def reset_view(self):
+        if not self._is_empty:
+            self.resetTransform()
+            self.fitInView(self.scene.sceneRect(), Qt.AspectRatioMode.KeepAspectRatio)
+
+    def zoom_by(self, factor: float):
+        if not self._is_empty:
+            self.scale(factor, factor)
+
+
+
 class CircularConfidenceWidget(QWidget):
     def __init__(self, parent=None, is_dark: bool = False):
         super().__init__(parent)
@@ -482,7 +550,6 @@ class CircularConfidenceWidget(QWidget):
         painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, f"{self.percentage:.1f}%")
 
 
-# --- Main Production Healthcare Enterprise Desktop Application Window ---
 class RetinaAIDesktopApp(QMainWindow):
     def __init__(self, engine: Optional[RetinaAIInferenceEngine] = None):
         super().__init__()
@@ -514,7 +581,6 @@ class RetinaAIDesktopApp(QMainWindow):
         self._apply_theme()
 
     def _get_theme_stylesheet(self) -> str:
-        """Returns dynamic QSS stylesheet for Light or Dark theme with fixed dialog styling."""
         if self.is_dark_mode:
             return """
             QMainWindow, QScrollArea, QWidget#body_widget {
@@ -812,15 +878,15 @@ class RetinaAIDesktopApp(QMainWindow):
 
         btn_zoom_in = QPushButton("🔍 Zoom In")
         btn_zoom_in.setObjectName("secondaryBtn")
-        btn_zoom_in.clicked.connect(lambda: self._adjust_zoom(1.2))
+        btn_zoom_in.clicked.connect(lambda: self.image_canvas.zoom_by(1.25))
 
         btn_zoom_out = QPushButton("🔍 Zoom Out")
         btn_zoom_out.setObjectName("secondaryBtn")
-        btn_zoom_out.clicked.connect(lambda: self._adjust_zoom(0.8))
+        btn_zoom_out.clicked.connect(lambda: self.image_canvas.zoom_by(0.8))
 
-        btn_reset = QPushButton("🔄 Reset")
+        btn_reset = QPushButton("🔄 Reset View")
         btn_reset.setObjectName("secondaryBtn")
-        btn_reset.clicked.connect(self._reset_zoom)
+        btn_reset.clicked.connect(lambda: self.image_canvas.reset_view())
 
         toolbar.addWidget(btn_zoom_in)
         toolbar.addWidget(btn_zoom_out)
@@ -843,7 +909,40 @@ class RetinaAIDesktopApp(QMainWindow):
         toolbar.addStretch()
         left_layout.addLayout(toolbar)
 
-        # View Selection Tabs (Original, CLAHE, Lesion Overlay, Segmentation, Heatmap)
+        # Patient Clinical Metadata Intake Bar
+        patient_card = QFrame()
+        patient_card.setStyleSheet("background-color: #F1F5F9; border-radius: 8px; padding: 4px;" if not self.is_dark_mode else "background-color: #1E293B; border-radius: 8px; padding: 4px;")
+        pat_hb = QHBoxLayout(patient_card)
+        pat_hb.setContentsMargins(8, 4, 8, 4)
+        pat_hb.setSpacing(10)
+
+        pat_hb.addWidget(QLabel("<b>Patient ID:</b>", styleSheet="font-size:11px;"))
+        self.txt_patient_id = QLineEdit("PAT-2026-8891")
+        self.txt_patient_id.setFixedWidth(110)
+        self.txt_patient_id.setStyleSheet("padding: 3px 6px; font-size:11px; border-radius:4px; border:1px solid #CBD5E1;")
+        pat_hb.addWidget(self.txt_patient_id)
+
+        pat_hb.addWidget(QLabel("<b>Name:</b>", styleSheet="font-size:11px;"))
+        self.txt_patient_name = QLineEdit("Anonymous Patient")
+        self.txt_patient_name.setFixedWidth(130)
+        self.txt_patient_name.setStyleSheet("padding: 3px 6px; font-size:11px; border-radius:4px; border:1px solid #CBD5E1;")
+        pat_hb.addWidget(self.txt_patient_name)
+
+        pat_hb.addWidget(QLabel("<b>Eye:</b>", styleSheet="font-size:11px;"))
+        self.combo_eye = QComboBox()
+        self.combo_eye.addItems(["OD (Right Eye)", "OS (Left Eye)"])
+        self.combo_eye.setStyleSheet("padding: 3px 6px; font-size:11px; border-radius:4px; border:1px solid #CBD5E1;")
+        pat_hb.addWidget(self.combo_eye)
+
+        pat_hb.addWidget(QLabel("<b>Clinician:</b>", styleSheet="font-size:11px;"))
+        self.txt_clinician = QLineEdit("Dr. Anonymous")
+        self.txt_clinician.setFixedWidth(130)
+        self.txt_clinician.setStyleSheet("padding: 3px 6px; font-size:11px; border-radius:4px; border:1px solid #CBD5E1;")
+        pat_hb.addWidget(self.txt_clinician)
+
+        left_layout.addWidget(patient_card)
+
+        # View Selection Tabs (Original, CLAHE, Lesion Overlay, Segmentation, Heatmap, Side-by-Side)
         tab_box = QHBoxLayout()
         tab_box.setSpacing(4)
         self.tab_group = QButtonGroup(self)
@@ -853,8 +952,9 @@ class RetinaAIDesktopApp(QMainWindow):
         self.btn_tab_overlay = QPushButton("Lesion Overlay")
         self.btn_tab_seg = QPushButton("Segmentation")
         self.btn_tab_heat = QPushButton("Heatmap")
+        self.btn_tab_side = QPushButton("Side-by-Side")
 
-        for i, btn in enumerate([self.btn_tab_orig, self.btn_tab_clahe, self.btn_tab_overlay, self.btn_tab_seg, self.btn_tab_heat]):
+        for i, btn in enumerate([self.btn_tab_orig, self.btn_tab_clahe, self.btn_tab_overlay, self.btn_tab_seg, self.btn_tab_heat, self.btn_tab_side]):
             btn.setObjectName("tabBtn")
             btn.setCheckable(True)
             self.tab_group.addButton(btn, i)
@@ -867,23 +967,29 @@ class RetinaAIDesktopApp(QMainWindow):
         tab_box.addWidget(self.btn_tab_overlay)
         tab_box.addWidget(self.btn_tab_seg)
         tab_box.addWidget(self.btn_tab_heat)
+        tab_box.addWidget(self.btn_tab_side)
         tab_box.addStretch()
         left_layout.addLayout(tab_box)
 
-        # Central Image Canvas Area (Clickable placeholder)
-        self.image_canvas = ClickableLabel()
-        self.image_canvas.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.image_canvas.setMinimumSize(540, 500)
+        # Central Image Canvas Viewport (Interactive Zoom/Pan & Drag-and-Drop)
+        self.image_canvas = InteractiveFundusView()
+        self.image_canvas.setMinimumSize(540, 480)
         self.image_canvas.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.image_canvas.setCursor(Qt.CursorShape.PointingHandCursor)
         self.image_canvas.clicked.connect(self._select_and_process_image)
+        self.image_canvas.image_dropped.connect(lambda path: self._select_and_process_image(file_path=path))
         self._show_placeholder_canvas()
 
         left_layout.addWidget(self.image_canvas)
         body_layout.addWidget(left_card, stretch=6)
 
         # --- RIGHT PANEL (40% Width) ---
-        right_panel = QVBoxLayout()
+        right_scroll = QScrollArea()
+        right_scroll.setWidgetResizable(True)
+        right_scroll.setStyleSheet("border: none; background: transparent;")
+
+        right_widget = QWidget()
+        right_panel = QVBoxLayout(right_widget)
+        right_panel.setContentsMargins(0, 0, 0, 0)
         right_panel.setSpacing(16)
 
         # CARD 1: Diagnostic Summary
@@ -1070,9 +1176,9 @@ class RetinaAIDesktopApp(QMainWindow):
         actions_box.addWidget(self.btn_json)
         right_panel.addLayout(actions_box)
 
-        body_layout.addLayout(right_panel, stretch=4)
-        body_scroll.setWidget(body_widget)
-        root_layout.addWidget(body_scroll)
+        right_scroll.setWidget(right_widget)
+        body_layout.addWidget(right_scroll, stretch=4)
+        root_layout.addWidget(body_widget)
 
         # 3. Bottom Status Bar
         statusbar = QFrame()
@@ -1081,18 +1187,9 @@ class RetinaAIDesktopApp(QMainWindow):
         sb_layout = QHBoxLayout(statusbar)
         sb_layout.setContentsMargins(24, 0, 24, 0)
         sb_layout.setSpacing(24)
-
-        sb_layout.addWidget(QLabel("<b>Model:</b> Attention U-Net + ResNet50", styleSheet="color:#64748B; font-size:11px;"))
-        sb_layout.addWidget(QLabel("<b>Dataset:</b> IDRiD & DDR", styleSheet="color:#64748B; font-size:11px;"))
-        sb_layout.addWidget(QLabel("<b>Model Version:</b> v2.4", styleSheet="color:#64748B; font-size:11px;"))
-        sb_layout.addWidget(QLabel("<b>Inference Engine:</b> CUDA Acceleration", styleSheet="color:#64748B; font-size:11px;"))
-        sb_layout.addStretch()
-        sb_layout.addWidget(QLabel(f"<b>Last Updated:</b> {time.strftime('%b %d, %H:%M')}", styleSheet="color:#94A3B8; font-size:11px;"))
-
         root_layout.addWidget(statusbar)
 
     def _update_history_btn_label(self):
-        """Updates history button label with total count of stored items."""
         items = self.history_manager.load_history()
         count = len(items)
         if count > 0:
@@ -1101,13 +1198,11 @@ class RetinaAIDesktopApp(QMainWindow):
             self.history_btn.setText("📜 History")
 
     def _open_history_dialog(self):
-        """Opens the diagnostic scan history modal dialog."""
         dialog = HistoryDialog(self.history_manager, parent=self, is_dark=self.is_dark_mode)
         dialog.item_selected.connect(self._on_history_item_selected)
         dialog.exec()
 
     def _on_history_item_selected(self, item: dict):
-        """Handles user selecting a historical scan from the history dialog."""
         image_path = item.get("image_path", "")
         if image_path and Path(image_path).exists():
             self._select_and_process_image(file_path=image_path)
@@ -1115,7 +1210,6 @@ class RetinaAIDesktopApp(QMainWindow):
             QMessageBox.warning(self, "File Not Found", f"The original image file is no longer available on disk:\n{image_path}")
 
     def _show_placeholder_canvas(self):
-        """Displays a clean SVG-style canvas with an upload icon badge matching Light or Dark mode."""
         pixmap = QPixmap(540, 480)
         bg_color = QColor("#151C2C") if self.is_dark_mode else QColor("#F8FAFC")
         pixmap.fill(bg_color)
@@ -1150,12 +1244,9 @@ class RetinaAIDesktopApp(QMainWindow):
 
         painter.end()
 
-        border_style = "border: 2px dashed #38BDF8;" if self.is_dark_mode else "border: 2px dashed #BFDBFE;"
-        self.image_canvas.setStyleSheet(f"background-color: transparent; {border_style} border-radius: 12px;")
-        self.image_canvas.setPixmap(pixmap)
+        self.image_canvas.set_pixmap(pixmap, is_placeholder=True)
 
     def _update_clinical_findings(self, result: Optional[dict] = None):
-        """Updates Clinical Findings card with 4-6 clinician-focused diagnostic bullet observations."""
         while self.findings_layout.count():
             child = self.findings_layout.takeAt(0)
             if child.widget():
@@ -1312,9 +1403,16 @@ class RetinaAIDesktopApp(QMainWindow):
             self.rec_box.setStyleSheet("background-color: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; border-radius: 8px; padding: 10px; font-size: 12px;")
 
         self.radial_conf.set_percentage(result["confidence_pct"])
-        self.lbl_time_val.setText("⏱ 0.82 sec")
-        self.lbl_qual_val.setText("● Good")
-        self.lbl_qual_val.setStyleSheet("color: #16A34A; font-weight: bold; font-size: 11px;")
+        
+        # Real timing and image quality updates
+        inf_sec = result.get("inference_time_sec", 0.0)
+        self.lbl_time_val.setText(f"⏱ {inf_sec:.2f} sec")
+
+        qual_status = result.get("quality_status", "Good")
+        qual_color = result.get("quality_color", "#16A34A")
+        self.lbl_qual_val.setText(f"● {qual_status}")
+        self.lbl_qual_val.setStyleSheet(f"color: {qual_color}; font-weight: bold; font-size: 11px;")
+
         self.rec_box.setText(f"<b>Diagnostic Result:</b> {result['grade_title']}<br/><b>Action Plan:</b> {result['recommendation']}")
 
         # Update Card 4 Clinical Findings
@@ -1368,12 +1466,10 @@ class RetinaAIDesktopApp(QMainWindow):
         msg.exec()
 
     def _adjust_zoom(self, factor: float):
-        self.current_zoom *= factor
-        self._update_image_display()
+        self.image_canvas.zoom_by(factor)
 
     def _reset_zoom(self):
-        self.current_zoom = 1.0
-        self._update_image_display()
+        self.image_canvas.reset_view()
 
     def _on_overlay_toggled(self, state):
         self.overlay_enabled = (state == Qt.CheckState.Checked.value)
@@ -1432,24 +1528,24 @@ class RetinaAIDesktopApp(QMainWindow):
                 img_rgb = cv2.addWeighted(raw_rgb, 1.0 - self.overlay_opacity, heat_rgb, self.overlay_opacity, 0)
             else:
                 img_rgb = raw_rgb.copy()
+        elif mode_id == 5:
+            # 5: Dual-View Side-by-Side Comparison
+            raw_bgr = cv2.cvtColor(raw_rgb, cv2.COLOR_RGB2BGR)
+            overlay_bgr = self.current_result.get("overlay_bgr", raw_bgr)
+            if raw_bgr.shape != overlay_bgr.shape:
+                overlay_bgr = cv2.resize(overlay_bgr, (raw_bgr.shape[1], raw_bgr.shape[0]))
+            divider = np.zeros((raw_bgr.shape[0], 6, 3), dtype=np.uint8)
+            divider[:] = (37, 99, 235)  # Blue divider bar
+            combined_bgr = np.hstack([raw_bgr, divider, overlay_bgr])
+            img_rgb = cv2.cvtColor(combined_bgr, cv2.COLOR_BGR2RGB)
         else:
             img_rgb = raw_rgb.copy()
 
         h, w, c = img_rgb.shape
-        qimg = QImage(img_rgb.data, w, h, c * w, QImage.Format.Format_RGB888)
+        # Explicit copy prevents Python GC deallocation of NumPy buffer while QImage references it
+        qimg = QImage(img_rgb.data, w, h, c * w, QImage.Format.Format_RGB888).copy()
         pixmap = QPixmap.fromImage(qimg)
-
-        # Scale pixmap preserving 100% true aspect ratio within canvas bounds
-        scaled_w = int(self.image_canvas.width() * self.current_zoom)
-        scaled_h = int(self.image_canvas.height() * self.current_zoom)
-
-        scaled_pixmap = pixmap.scaled(
-            scaled_w,
-            scaled_h,
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation,
-        )
-        self.image_canvas.setPixmap(scaled_pixmap)
+        self.image_canvas.set_pixmap(pixmap, is_placeholder=False)
 
     def _download_pdf_report(self):
         if self.current_result is None:
@@ -1458,7 +1554,14 @@ class RetinaAIDesktopApp(QMainWindow):
             self, "Save Clinical PDF Diagnostic Report", "RetinaAI_Diagnostic_Report.pdf", "PDF Documents (*.pdf)"
         )
         if save_path:
-            pdf_file = generate_clinical_pdf_report(self.current_result, save_path)
+            pdf_file = generate_clinical_pdf_report(
+                self.current_result,
+                save_path,
+                patient_id=self.txt_patient_id.text(),
+                patient_name=self.txt_patient_name.text(),
+                eye_laterality=self.combo_eye.currentText(),
+                clinician_name=self.txt_clinician.text()
+            )
             # Create styled QMessageBox with high-contrast text
             msg = QMessageBox(self)
             msg.setWindowTitle("Report Downloaded")
@@ -1476,13 +1579,19 @@ class RetinaAIDesktopApp(QMainWindow):
         )
         if save_path:
             export_data = {
-                "patient_id": "PAT-2026-8891",
+                "patient_id": self.txt_patient_id.text(),
+                "patient_name": self.txt_patient_name.text(),
+                "eye_laterality": self.combo_eye.currentText(),
+                "clinician_name": self.txt_clinician.text(),
                 "predicted_grade": self.current_result["predicted_grade"],
                 "grade_title": self.current_result["grade_title"],
                 "referable_status": self.current_result["referable_status"],
                 "is_referable": self.current_result["is_referable"],
                 "recommendation": self.current_result["recommendation"],
                 "confidence_pct": self.current_result["confidence_pct"],
+                "inference_time_sec": self.current_result.get("inference_time_sec", 0.0),
+                "quality_status": self.current_result.get("quality_status", "Good"),
+                "quality_score": self.current_result.get("quality_score", 0.0),
                 "probabilities": self.current_result["probabilities"],
                 "lesion_counts": self.current_result["lesion_counts"],
             }
@@ -1495,6 +1604,7 @@ class RetinaAIDesktopApp(QMainWindow):
             msg.setInformativeText(f"File saved to:\n{save_path}")
             msg.setStandardButtons(QMessageBox.StandardButton.Ok)
             msg.exec()
+
 
 
 def main():

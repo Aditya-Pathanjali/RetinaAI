@@ -27,7 +27,10 @@ class HybridDRClassifier(nn.Module):
             except AttributeError:
                 self.backbone = models.efficientnet_b4(pretrained=True)
         else:
-            self.backbone = models.efficientnet_b4(pretrained=False)
+            try:
+                self.backbone = models.efficientnet_b4(weights=None)
+            except (AttributeError, TypeError):
+                self.backbone = models.efficientnet_b4(pretrained=False)
 
             
         if self.in_channels != 3:

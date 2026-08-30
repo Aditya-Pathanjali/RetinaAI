@@ -1,8 +1,11 @@
 
+# This script contains the logic for plotting visualizations used throughout the project
+# This includes plotting class distributions, sample images with masks, preprocessing stages, augmentation grids, attention maps, and metric tables
+
 import cv2
 import numpy as np
 import matplotlib
-matplotlib.use("Agg")  # Non-interactive backend for server/headless use
+matplotlib.use("Agg")   
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.colors import LinearSegmentedColormap
@@ -12,7 +15,6 @@ from typing import Dict, List, Optional, Tuple, Any
 import torch
 
 
-# Colour-blind-friendly palette for the 4 lesion classes
 CLASS_COLOURS = {
     "MA": (1.0, 0.2, 0.2, 0.7),   # Red — microaneurysms
     "HE": (0.2, 0.6, 1.0, 0.7),   # Blue — haemorrhages
@@ -176,10 +178,7 @@ class Visualizer:
         plt.close()
         return str(save_path)
 
-    # ------------------------------------------------------------------
-    # Augmentation Visualization
-    # ------------------------------------------------------------------
-
+    
     def plot_augmentation_grid(
         self,
         original_image: np.ndarray,
@@ -458,10 +457,6 @@ class Visualizer:
         plt.close()
         return str(save_path)
 
-    # ------------------------------------------------------------------
-    # Attention Map Visualization
-    # ------------------------------------------------------------------
-
     def plot_attention_maps(
         self,
         image: np.ndarray,
@@ -510,10 +505,7 @@ class Visualizer:
         plt.close()
         return str(save_path)
 
-    # ------------------------------------------------------------------
-    # Metric Tables
-    # ------------------------------------------------------------------
-
+    
     def plot_metric_table(
         self,
         results: Dict,
@@ -584,10 +576,7 @@ class Visualizer:
         plt.close()
         return str(save_path)
 
-    # ------------------------------------------------------------------
-    # Private Helpers
-    # ------------------------------------------------------------------
-
+    
     @staticmethod
     def _denormalize(
         tensor: torch.Tensor,

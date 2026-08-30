@@ -11,8 +11,10 @@ import numpy as np
 import torch
 import yaml
 
+#This script contains helper functions used throughout the project
 
 def set_seed(seed: int = 42) -> None:
+    #Used to set the seed for reproducibility of results across different runs of the model
     
     random.seed(seed)
     np.random.seed(seed)
@@ -22,11 +24,6 @@ def set_seed(seed: int = 42) -> None:
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     os.environ["PYTHONHASHSEED"] = str(seed)
-
-
-# ---------------------------------------------------------------------------
-# Configuration Loading
-# ---------------------------------------------------------------------------
 
 def load_config(config_path: str) -> Dict[str, Any]:
     

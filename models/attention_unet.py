@@ -94,7 +94,7 @@ class DecoderBlock(nn.Module):
                 in_channels, out_channels, kernel_size=2, stride=2,
             )
 
-        # Attention gate (optional — for ablation)
+        # Attention gate
         self.use_attention = use_attention
         if use_attention:
             self.attention = AttentionGate(
