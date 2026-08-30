@@ -1,4 +1,4 @@
-# RetinaAI — Explainable Deep Learning System for Diabetic Retinopathy Screening
+# RetinaAI — Automated and Explainable Diabetic Retinopathy Screening System
 
 RetinaAI is an automated and explainable Diabetic Retinopathy (DR) screening system designed to identify retinal lesions, classify disease severity, and provide visual evidence for its predictions. 
 
