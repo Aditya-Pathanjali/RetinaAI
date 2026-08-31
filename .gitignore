@@ -31,17 +31,20 @@ build_exe.py
 
 # ── Local Experiments & Data Outputs ─────────────────────────────────────────
 experiments/
-outputs/
 outputs/logs/
+outputs/history_cache/
+outputs/inference/
+outputs/lesion_segmentation/
+outputs/scan_history.json
+outputs/temp_preview.png
+outputs/lesion_segmentation_comparison.png
+outputs/retina_ai_diagnostic_report_ieee.png
+outputs/*.pdf
+outputs/*.json
 best pick/
 scratch/
 notebooks/
 tests/
-*.pdf
-*.png
-*.jpg
-*.csv
-*.json
 
 # ── Secondary / Experimental Scripts (preserved locally) ────────────────────
 /train_binary_lesion.py
