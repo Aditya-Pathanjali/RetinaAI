@@ -45,6 +45,8 @@ inference_engine: Optional[RetinaAIInferenceEngine] = None
 @app.on_event("startup")
 def startup_event():
     global inference_engine
+    if inference_engine is not None:  # already injected (e.g. by app.py on Hugging Face Spaces)
+        return
     try:
         inference_engine = RetinaAIInferenceEngine()
     except Exception as e:

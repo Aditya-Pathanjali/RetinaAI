@@ -44,7 +44,6 @@ outputs/*.json
 best pick/
 scratch/
 notebooks/
-tests/
 
 # ── Secondary / Experimental Scripts (preserved locally) ────────────────────
 /train_binary_lesion.py
@@ -61,11 +60,8 @@ tests/
 /web_app.py
 /train.py
 /evaluate.py
-/app.py
 /generate_visualizations.py
 /inference.py
-/Dockerfile
-/docker-compose.yml
 
 # ── Secondary Configs (preserved locally) ────────────────────────────────────
 configs/config_combined.yaml

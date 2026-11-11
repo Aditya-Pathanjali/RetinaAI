@@ -58,19 +58,22 @@ class RetinaAIInferenceEngine:
         self.val_transform = get_val_transforms(self.config)
         self.class_names = self.config["dataset"]["class_names"]
 
+        # Fail fast: never serve randomly-initialised weights
+        for p in (self.seg_ckpt_path, self.cls_ckpt_path):
+            if not p.exists():
+                raise FileNotFoundError(f"Model checkpoint not found: {p}")
+
         # Load Stage 1 Attention U-Net
         self.seg_model = build_model(self.config).to(self.device)
-        if self.seg_ckpt_path.exists():
-            ckpt = torch.load(str(self.seg_ckpt_path), map_location=self.device, weights_only=False)
-            self.seg_model.load_state_dict(ckpt["model_state_dict"])
-            self.seg_model.eval()
+        ckpt = torch.load(str(self.seg_ckpt_path), map_location=self.device, weights_only=False)
+        self.seg_model.load_state_dict(ckpt["model_state_dict"])
+        self.seg_model.eval()
 
         # Load Stage 2 Hybrid DR Classifier
         self.cls_model = build_classifier(self.config, in_channels=3).to(self.device)
-        if self.cls_ckpt_path.exists():
-            ckpt = torch.load(str(self.cls_ckpt_path), map_location=self.device, weights_only=False)
-            self.cls_model.load_state_dict(ckpt["model_state_dict"])
-            self.cls_model.eval()
+        ckpt = torch.load(str(self.cls_ckpt_path), map_location=self.device, weights_only=False)
+        self.cls_model.load_state_dict(ckpt["model_state_dict"])
+        self.cls_model.eval()
 
         self.grade_labels = {
             0: ("Grade 0 — Healthy / No DR", "🟢 Non-Referable", "No clinical signs of diabetic retinopathy. Schedule routine 12-month re-screening."),
