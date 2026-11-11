@@ -12,7 +12,7 @@ ENV PATH=/home/user/.local/bin:$PATH \
 WORKDIR /home/user/app
 
 COPY --chown=user requirements-space.txt .
-RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu \
+RUN pip install --no-cache-dir torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu \
  && pip install --no-cache-dir -r requirements-space.txt
 
 # Bake model weights into the image so scale-from-zero starts need no download
