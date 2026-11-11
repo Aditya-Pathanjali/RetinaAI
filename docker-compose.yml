@@ -1,0 +1,10 @@
+services:
+  retinaai:
+    build: .
+    container_name: retinaai
+    ports:
+      - "7860:7860"
+    environment:
+      # Weights are pulled from this Hugging Face model repo at startup
+      - WEIGHTS_REPO=AdityaPathanjalii/retinaai-weights
+    restart: unless-stopped
